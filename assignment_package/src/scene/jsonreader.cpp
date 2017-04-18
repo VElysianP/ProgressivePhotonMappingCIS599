@@ -10,7 +10,11 @@
 #include <scene/materials/glassmaterial.h>
 #include <scene/materials/plasticmaterial.h>
 #include <scene/lights/diffusearealight.h>
+#include <scene/lights/pointlight.h>
+#include <scene/lights/spotlight.h>
+#include <scene/realisticcamera.h>
 #include <iostream>
+#include <scene/lights/directionallight.h>
 
 
 void JSONReader::LoadSceneFromFile(QFile &file, const QStringRef &local_path, Scene &scene)
@@ -36,6 +40,11 @@ void JSONReader::LoadSceneFromFile(QFile &file, const QStringRef &local_path, Sc
                 camera = sceneObj["camera"].toObject();
                 scene.SetCamera(LoadCamera(camera));
             }
+            //loasd realistic camera
+//            if(sceneObj.contains(QString("realCamera"))){
+//                camera = sceneObj["realCamera"].toObject();
+//                scene.SetCamera(LoadRealisticCamera(camera));
+//            }
             //load all materials in QMap with mtl name as key and Material itself as value
             if(sceneObj.contains(QString("materials"))){
                 materialList = sceneObj["materials"].toArray();
@@ -229,6 +238,27 @@ bool JSONReader::LoadLights(QJsonObject &geometry, QMap<QString, std::shared_ptr
         bool twoSided = geometry.contains(QString("twoSided")) ? geometry["twoSided"].toBool() : false;
         lightType = std::make_shared<DiffuseAreaLight>(shape->transform, lightColor * intensity, shape, twoSided);
     }
+    else if(QString::compare(lgtType, QString("PointLight")) == 0)
+    {
+        Color3f lightColor = ToVec3(geometry["lightColor"].toArray());
+        Float intensity = static_cast< float >(geometry["intensity"].toDouble());
+        lightType = std::make_shared<PointLight>(shape->transform, lightColor * intensity);
+    }
+    else if(QString::compare(lgtType, QString("SpotLight")) == 0)
+    {
+        Color3f lightColor = ToVec3(geometry["lightColor"].toArray());
+        Float intensity = static_cast< float >(geometry["intensity"].toDouble());
+        Float totalWidth = static_cast< float >(geometry["totalWidth"].toDouble());
+        Float fallOffStart = static_cast< float >(geometry["fallOffStart"].toDouble());
+        lightType = std::make_shared<SpotLight>(shape->transform, lightColor * intensity, totalWidth,  fallOffStart);
+    }
+    else if(QString::compare(lgtType, QString("DirectionalLight")) == 0)
+    {
+        Color3f lightColor = ToVec3(geometry["lightColor"].toArray());
+        Float intensity = static_cast< float >(geometry["intensity"].toDouble());
+        Point3f wLight = ToVec3(geometry["lightDir"].toArray());
+        lightType = std::make_shared<DirectionalLight>(shape->transform, lightColor * intensity, wLight, shape);
+    }
     else
     {
         std::cout << "Could not parse the geometry!" << std::endl;
@@ -400,6 +430,24 @@ Camera JSONReader::LoadCamera(QJsonObject& camera)
     result.RecomputeAttributes();
     return result;
 }
+
+//RealisticCamera JSONReader::LoadRealisticCamera(QJsonObject& camera)
+//{
+//    RealisticCamera result;
+//    if(camera.contains(QString("target"))) result.ref = ToVec3(camera["target"].toArray());
+//    if(camera.contains(QString("eye"))) result.eye = ToVec3(camera["eye"].toArray());
+//    if(camera.contains(QString("worldUp"))) result.world_up = ToVec3(camera["worldUp"].toArray());
+//    if(camera.contains(QString("width"))) result.width = camera["width"].toDouble();
+//    if(camera.contains(QString("height"))) result.height = camera["height"].toDouble();
+//    if(camera.contains(QString("fov"))) result.fovy = camera["fov"].toDouble();
+//    if(camera.contains(QString("nearClip"))) result.near_clip = camera["nearClip"].toDouble();
+//    if(camera.contains(QString("farClip"))) result.far_clip = camera["farClip"].toDouble();
+//    if(camera.contains(QString("lensRadius"))) result.lensRadius = camera["lensRadius"].toDouble();
+//    if(camera.contains(QString("focalDistance"))) result.focalDistance = camera["focalDistance"].toDouble();
+
+//    result.RecomputeAttributes();
+//    return result;
+//}
 
 Transform JSONReader::LoadTransform(QJsonObject &transform)
 {

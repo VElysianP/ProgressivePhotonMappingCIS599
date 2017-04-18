@@ -1,5 +1,6 @@
-#pragma once
+#pragma o"nce
 
+#include "scene/bounds.h"
 #include "light.h"
 
 class DiffuseAreaLight : public AreaLight
@@ -10,7 +11,7 @@ public:
                      bool twoSided = false)
         : AreaLight(t), emittedLight(Le), shape(shape),
           area(shape->Area()), twoSided(twoSided)
-    {}
+    {lightType = DIFFUSEAREALIGHT;}
 
     // Returns the energy emitted along _w_ from a point on our surface _isect_
     // If _twoSided_ is false, then we must check if _w_ is in the same direction

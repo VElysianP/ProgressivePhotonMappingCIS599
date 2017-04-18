@@ -5,12 +5,22 @@
 
 class Intersection;
 
+
+enum LightType
+{
+    UKNOWN = -1,
+    DIFFUSEAREALIGHT = 0,
+    POINTLIGHT = 1,
+    SPOTLIGHT = 2,
+    DIRECTIONALLIGHT = 3
+};
+
 class Light
 {
   public:
     virtual ~Light(){}
     Light(Transform t)
-        : transform(t), name()
+        : transform(t), name(), pLight(t.position()),lightType(UKNOWN)
     {}
 
     // Returns the light emitted along a ray that does
@@ -27,6 +37,12 @@ class Light
 
     virtual float Pdf_Li(const Intersection &ref, const Vector3f &wi) const = 0;
     QString name; // For debugging
+    virtual Color3f L(const Intersection &isect, const Vector3f &w) const = 0;
+
+    Point3f pLight;
+    LightType lightType;
+
+
 
   protected:
     const Transform transform;

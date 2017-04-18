@@ -22,11 +22,15 @@ bool Primitive::ProduceBSDF(Intersection *isect) const
     return false;
 }
 
-const AreaLight* Primitive::GetAreaLight() const
-{
-    return areaLight.get();
-}
+//const AreaLight* Primitive::GetAreaLight() const
+//{
+//    return areaLight.get();
+//}
 
+const Light* Primitive::GetLight() const
+{
+    return light.get();
+}
 
 const Material* Primitive::GetMaterial() const
 {

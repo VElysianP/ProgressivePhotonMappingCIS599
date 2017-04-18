@@ -18,7 +18,8 @@ Color3f DirectLightingIntegrator::Li(const Ray &ray, const Scene &scene, std::sh
         Vector3f wiW; 
         leColor = isec.Le(woW);
 
-        if((isec.objectHit->areaLight!=nullptr))
+        //***********************************light and arealight
+        if((isec.objectHit->light!=nullptr))
         {
             return leColor;
         }
@@ -32,30 +33,56 @@ Color3f DirectLightingIntegrator::Li(const Ray &ray, const Scene &scene, std::sh
 
         Ray shadowTestRay = isec.SpawnRay(wiW);
         Intersection shadowIntersection = Intersection();
-        if(scene.Intersect(shadowTestRay,&shadowIntersection))
-        {
-            if((shadowIntersection.objectHit->GetAreaLight()==nullptr)||(shadowIntersection.objectHit->areaLight!=scene.lights[lightNum]))
+        std::shared_ptr<Light> chosenLight = scene.lights[lightNum];
+//        if((chosenLight->lightType == 1)||(chosenLight->lightType == 2))
+//        {
+//            if(scene.Intersect(shadowTestRay,&shadowIntersection))
+//            {
+//                if(shadowIntersection.t<1)
+//                {
+//                    totalColor = Color3f(0.0f);
+//                }
+//                else
+//                {
+//                    totalColor = fColor * liColor * AbsDot(wiW,isec.normalGeometric)/currentPdf;
+//                }
+
+//            }
+//            else
+//            {
+//                totalColor = fColor * liColor * AbsDot(wiW,isec.normalGeometric)/currentPdf;
+//            }
+//        }
+//        else
+//        {
+            if(scene.Intersect(shadowTestRay,&shadowIntersection))
             {
+                //***********************************light and arealight
+                if((shadowIntersection.objectHit->GetLight()==nullptr)||(shadowIntersection.objectHit->GetLight()->name!=scene.lights[lightNum]->name))
+                {
 
-                totalColor = leColor;
-                return totalColor;
+                    totalColor = leColor;
+                    return totalColor;
+                }
             }
-        }
 
-        if(currentPdf==0)
-        {
-            totalColor = leColor/* + fColor*liColor*AbsDot(wiW,isec.normalGeometric)*/;
-        }
-        else
-        {
-           currentPdf = currentPdf/scene.lights.size();
-           totalColor = leColor + fColor*liColor*AbsDot(wiW,isec.normalGeometric)/currentPdf;
-        }
-
+            if(currentPdf==0)
+            {
+                totalColor = leColor/* + fColor*liColor*AbsDot(wiW,isec.normalGeometric)*/;
+            }
+            else
+            {
+               currentPdf = currentPdf/scene.lights.size();
+               totalColor = leColor + fColor*liColor*AbsDot(wiW,isec.normalGeometric)/currentPdf;
+            }
+//       }
     }
     else
     {
         totalColor = leColor;
     }
+
+
+
     return totalColor;
 }

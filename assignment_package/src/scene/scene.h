@@ -5,6 +5,7 @@
 #include <scene/lights/light.h>
 #include <scene/geometry/shape.h>
 #include "bvh.h"
+#include <scene/realisticcamera.h>
 
 class Primitive;
 class BVHAccel;
@@ -20,6 +21,7 @@ public:
     QList<std::shared_ptr<Material>> materials;
     QList<std::shared_ptr<Light>> lights;
     Camera camera;
+    RealisticCamera realCamera;
     Film film;
 
     BVHAccel* bvh;

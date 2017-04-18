@@ -8,6 +8,7 @@
 #include <scene/lights/diffusearealight.h>
 
 
+
 Scene::Scene() : bvh(nullptr)
 {}
 
@@ -20,6 +21,7 @@ void Scene::SetCamera(const Camera &c)
 {
     camera = Camera(c);
     camera.create();
+
     film.SetDimensions(c.width, c.height);
 }
 
@@ -72,7 +74,7 @@ void Scene::CreateTestScene()
     auto lightSource = std::make_shared<DiffuseAreaLight>(lightSquare->transform, Color3f(1,1,1) * 2.f, lightSquare);
     auto lightPrim = std::make_shared<Primitive>(lightSquare, nullptr, lightSource);
     lightPrim->name = QString("Light Source");
-    lightSource->name = QString("Light Source 1");
+//    lightSource->name = QString("Light Source 1");
 
     // Light source 2, which is a diffuse area light with a large plane as its shape
     auto lightSquare2 = std::make_shared<SquarePlane>();
@@ -80,7 +82,7 @@ void Scene::CreateTestScene()
     auto lightSource2 = std::make_shared<DiffuseAreaLight>(lightSquare2->transform, Color3f(0.9,1,0.7) * 2.f, lightSquare2, true);
     auto lightPrim2 = std::make_shared<Primitive>(lightSquare2, nullptr, lightSource2);
     lightPrim2->name = QString("Light Source 2");
-    lightSource2->name = QString("Light Source 2");
+//    lightSource2->name = QString("Light Source 2");
 
     // Shadow casting shape, which is a red sphere
     auto sphere = std::make_shared<Sphere>();
@@ -115,6 +117,8 @@ void Scene::CreateTestScene()
     camera.near_clip = 0.1f;
     camera.far_clip = 100.0f;
     camera.create();
+
+    realCamera.create();
     film = Film(400, 400);
 }
 

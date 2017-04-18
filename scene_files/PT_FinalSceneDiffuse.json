@@ -1,0 +1,291 @@
+{
+  "frames" :[
+    {
+    "frameNumber" : 0,
+    "scene" : {
+      "camera" : {
+        "target" : [0, 2.5, 0],
+        "eye" : [0, 5.5, -30],
+        "worldUp" : [0, 1, 0],
+        "fov" : 19.5,
+        "width" : 1024,
+        "height": 1024
+      },
+      "primitives" : [
+		{
+          "shape" : "Cube",
+          "name" : "Floor1",
+          "material" : "transmissiveMaterialPink",
+          "transform" : {
+            "translate" : [3.75, -3,5.75],
+            "rotate" : [0, 0, 0],
+            "scale" : [2.5, 1, 2.5]
+          }
+        },
+		{
+          "shape" : "Cube",
+          "name" : "Floor2",
+          "material" : "transmissiveMaterialGreen",
+          "transform" : {
+            "translate" : [1.25, -3,5.75],
+            "rotate" : [0, 0, 0],
+            "scale" : [2.5, 1, 2.5]
+          }
+        },
+		{
+          "shape" : "Cube",
+          "name" : "Floor3",
+          "material" : "transmissiveMaterialPurple",
+          "transform" : {
+            "translate" : [-1.25, -3,5.75],
+            "rotate" : [0, 0, 0],
+            "scale" : [2.5, 1, 2.5]
+          }
+        },
+		{
+          "shape" : "Cube",
+          "name" : "Floor4",
+          "material" : "transmissiveMaterialBlue",
+          "transform" : {
+            "translate" : [-3.75, -3,5.75],
+            "rotate" : [0, 0, 0],
+            "scale" : [2.5, 1, 2.5]
+          }
+        },
+		{
+          "shape" : "Cube",
+          "name" : "Floor5",
+          "material" : "transmissiveMaterialYellow",
+          "transform" : {
+            "translate" : [3.75, -3,3.25],
+            "rotate" : [0, 0, 0],
+            "scale" : [2.5, 1, 2.5]
+          }
+        },
+		{
+          "shape" : "Cube",
+          "name" : "Floor6",
+          "material" : "transmissiveMaterialOrange",
+          "transform" : {
+            "translate" : [1.25, -3,3.25],
+            "rotate" : [0, 0, 0],
+            "scale" : [2.5, 1, 2.5]
+          }
+        },
+		{
+          "shape" : "Cube",
+          "name" : "Floor7",
+          "material" : "transmissiveMaterialRed",
+          "transform" : {
+            "translate" : [-1.25, -3,3.25],
+            "rotate" : [0, 0, 0],
+            "scale" : [2.5, 1, 2.5]
+          }
+        },
+		{
+          "shape" : "Cube",
+          "name" : "Floor8",
+          "material" : "transmissiveMaterialGrey",
+          "transform" : {
+            "translate" : [-3.75, -3,3.25],
+            "rotate" : [0, 0, 0],
+            "scale" : [2.5, 1, 2.5]
+          }
+        },
+		{
+          "shape" : "Cube",
+          "name" : "Floor9",
+          "material" : "transmissiveMaterialRed",
+          "transform" : {
+            "translate" : [3.75, -3,0.75],
+            "rotate" : [0, 0, 0],
+            "scale" : [2.5, 1, 2.5]
+          }
+        },
+		{
+          "shape" : "Cube",
+          "name" : "Floor10",
+          "material" : "transmissiveMaterialBlue",
+          "transform" : {
+            "translate" : [1.25, -3,0.75],
+            "rotate" : [0, 0, 0],
+            "scale" : [2.5, 1, 2.5]
+          }
+        },
+		{
+          "shape" : "Cube",
+          "name" : "Floor11",
+          "material" : "transmissiveMaterialPurple",
+          "transform" : {
+            "translate" : [-1.25, -3,0.75],
+            "rotate" : [0, 0, 0],
+            "scale" : [2.5, 1, 2.5]
+          }
+        },
+		{
+          "shape" : "Cube",
+          "name" : "Floor12",
+          "material" : "transmissiveMaterialYellow",
+          "transform" : {
+            "translate" : [-3.75, -3,0.75],
+            "rotate" : [0, 0, 0],
+            "scale" : [2.5, 1, 2.5]
+          }
+        },
+		{
+          "shape" : "Cube",
+          "name" : "Floor13",
+          "material" : "transmissiveMaterialGreen",
+          "transform" : {
+            "translate" : [3.75, -3,-1.75],
+            "rotate" : [0, 0, 0],
+            "scale" : [2.5, 1, 2.5]
+          }
+        },
+		{
+          "shape" : "Cube",
+          "name" : "Floor14",
+          "material" : "transmissiveMaterialGrey",
+          "transform" : {
+            "translate" : [1.25, -3,-1.75],
+            "rotate" : [0, 0, 0],
+            "scale" : [2.5, 1, 2.5]
+          }
+        },
+		{
+          "shape" : "Cube",
+          "name" : "Floor15",
+          "material" : "transmissiveMaterialPink",
+          "transform" : {
+            "translate" : [-1.25, -3,-1.75],
+            "rotate" : [0, 0, 0],
+            "scale" : [2.5, 1, 2.5]
+          }
+        },
+		{
+          "shape" : "Cube",
+          "name" : "Floor16",
+          "material" : "transmissiveMaterialOrange",
+          "transform" : {
+            "translate" : [-3.75, -3,-1.75],
+            "rotate" : [0, 0, 0],
+            "scale" : [2.5, 1, 2.5]
+          }
+        },
+        {
+          "shape" : "Mesh",
+          "filename" : "MikuFigure/MikuFigure.obj",
+          "name" : "miku",
+          "material" : "MikuMaterial",
+          "transform" : {
+            "translate" : [0, -3, 2],
+            "rotate" : [0,180,0],
+            "scale" : [2, 2, 2]
+          }
+        }
+      ],
+      "lights" : [
+        {
+          "shape" : "SquarePlane",
+          "name" : "Light Source",
+          "type" : "DiffuseAreaLight",
+          "lightColor" : [1,1,1],
+          "intensity" : 10,
+          "transform" : {
+            "translate" : [0,12,0],
+            "rotate" : [90,0,0],
+            "scale" : [3, 3, 1]
+          },
+          "isDelta" : false,
+          "twoSided" : true
+        },
+		{
+          "shape" : "SquarePlane",
+          "name" : "Light Source",
+          "type" : "DiffuseAreaLight",
+          "lightColor" : [1,1,1],
+          "intensity" : 70,
+          "transform" : {
+            "translate" : [0,3,-40],
+            "rotate" : [0,0,0],
+            "scale" : [3, 3, 1]
+          },
+          "isDelta" : false,
+          "twoSided" : true
+        }
+      ],
+      "materials" : [
+        {
+          "type" : "MatteMaterial",
+          "name" : "matteWhite",
+            "Kd" : [0.85, 0.81, 0.78],
+          "sigma": 0
+        },
+        {
+          "type": "GlassMaterial",
+          "name": "transmissiveMaterialPink",
+          "Kt": [0.98, 0.48, 0.97],
+          "Kr": [0.98, 0.48, 0.97],
+          "eta": 1.55
+        },
+		{
+          "type": "GlassMaterial",
+          "name": "transmissiveMaterialGreen",
+          "Kt": [0.61, 0.97, 0.24],
+          "Kr": [0.61, 0.97, 0.24],
+          "eta": 1.55
+        },
+		{
+          "type": "GlassMaterial",
+          "name": "transmissiveMaterialPurple",
+          "Kt": [0.64, 0.0, 1.0],
+          "Kr": [0.64, 0.0, 1.0],
+          "eta": 1.55
+        },
+		{
+          "type": "GlassMaterial",
+          "name": "transmissiveMaterialBlue",
+          "Kt": [0.24, 1.0, 0.99],
+          "Kr": [0.24, 1.0, 0.99],
+          "eta": 1.55
+        },
+		{
+          "type": "GlassMaterial",
+          "name": "transmissiveMaterialYellow",
+          "Kt": [0.99, 1.0, 0.24],
+          "Kr": [0.99, 1.0, 0.24],
+          "eta": 1.55
+        },
+		{
+          "type": "GlassMaterial",
+          "name": "transmissiveMaterialOrange",
+          "Kt": [0.98, 0.67, 0.17],
+          "Kr": [0.98, 0.67, 0.17],
+          "eta": 1.55
+        },
+		{
+          "type": "GlassMaterial",
+          "name": "transmissiveMaterialRed",
+          "Kt": [1.0, 0.0, 0.0],
+          "Kr": [1.0, 0.0, 0.0],
+          "eta": 1.55
+        },
+		{
+          "type": "GlassMaterial",
+          "name": "transmissiveMaterialGrey",
+          "Kt": [0.47, 0.52, 0.53],
+          "Kr": [0.47, 0.52, 0.53],
+          "eta": 1.55
+        },
+        {
+          "type" : "MatteMaterial",
+          "name" : "MikuMaterial",
+          "Kd" : [1, 1, 1],
+          "sigma": 0,
+		  "textureMap": "MikuFigure/roomitems_002_body.png"
+        }
+      ]
+    }
+  }
+]
+}

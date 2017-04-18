@@ -49,7 +49,8 @@ Color3f FullLightingIntegrator::Li(const Ray &ray, const Scene &scene, std::shar
 //            else
 //            {
                 //if the intersection hits a light
-                if(isec.objectHit->areaLight!=nullptr)
+              if(isec.objectHit->GetLight()!=nullptr)
+//                if(isec.objectHit->areaLight!=nullptr)
                 {
                     if(depth<recursionLimit)
                     {
@@ -72,30 +73,58 @@ Color3f FullLightingIntegrator::Li(const Ray &ray, const Scene &scene, std::shar
                     Color3f directLightFColor = isec.bsdf->f(woW,directLightWiW);
                     Ray shadowTestRay = isec.SpawnRay(directLightWiW);
                     Intersection shadowIntersection = Intersection();
-                    if(scene.Intersect(shadowTestRay,&shadowIntersection))
+                    //specially for pointlight and spotlight
+                    std::shared_ptr<Light> chosenLight = scene.lights[chosenLightNum];
+                    if((chosenLight->lightType == POINTLIGHT)||(chosenLight->lightType == SPOTLIGHT))
                     {
-                        //the situation without shadow
-                        if(shadowIntersection.objectHit->areaLight==scene.lights[chosenLightNum])
+                        //with Intersection in the scene
+                        if(scene.Intersect(shadowTestRay,&shadowIntersection))
                         {
-                            if(directLightPdf1==0)
+                            if(shadowIntersection.t < (1 - FLT_EPSILON))
                             {
-                                directLightTotalColor = Color3f(0.f);
+                                directLightTotalColor = Color3f(0.0f);
                             }
                             else
                             {
                                 directLightTotalColor = directLightFColor * directLightLiColor * AbsDot(directLightWiW,isec.normalGeometric)/directLightPdf1;
+                            }
 
+                        }
+                        else
+                        {
+                            directLightTotalColor = directLightFColor * directLightLiColor * AbsDot(directLightWiW,isec.normalGeometric)/directLightPdf1;
+                        }
+                    }
+                    else
+                    {
+                        if(scene.Intersect(shadowTestRay,&shadowIntersection))
+                        {
+                            //the situation without shadow
+                            //***********************************light and arealight
+                            if(shadowIntersection.objectHit->light==scene.lights[chosenLightNum])
+                            {
+                                if(directLightPdf1==0)
+                                {
+                                    directLightTotalColor = Color3f(0.f);
+                                }
+                                else
+                                {
+                                    directLightTotalColor = directLightFColor * directLightLiColor * AbsDot(directLightWiW,isec.normalGeometric)/directLightPdf1;
+
+                                }
+                            }
+                            else
+                            {
+                                directLightTotalColor = Color3f(0.f);
                             }
                         }
                         else
                         {
                             directLightTotalColor = Color3f(0.f);
                         }
+
                     }
-                    else
-                    {
-                        directLightTotalColor = Color3f(0.f);
-                    }
+
 
 
                     //direct BSDF sampling
@@ -110,21 +139,36 @@ Color3f FullLightingIntegrator::Li(const Ray &ray, const Scene &scene, std::shar
                     Color3f directBSDFLiColor = Color3f(0.0f);
                     Intersection newIntersection = Intersection();
 
-                    //the new ray has any intersection
-                    if(scene.Intersect(newRay,&newIntersection))
+                    if((chosenLight->lightType == POINTLIGHT)||(chosenLight->lightType == SPOTLIGHT))
                     {
-                        //hits the light we want
-                        if(newIntersection.objectHit->areaLight==scene.lights[chosenLightNum])
+
+                        directNaiveTotalColor = Color3f(0.0f);
+                    }
+                    else
+                    {
+                        //the new ray has any intersection
+                        if(scene.Intersect(newRay,&newIntersection))
                         {
-                            Vector3f wiwInverse = directBSDFWiW;
-                            directBSDFLiColor = newIntersection.Le(-wiwInverse);
-                            if(directBSDFPdf1==0)
+                            //hits the light we want
+                            //***********************************light and arealight
+                            if(newIntersection.objectHit->light==scene.lights[chosenLightNum])
                             {
-                                directNaiveTotalColor = Color3f(0.0f);
+
+                                Vector3f wiwInverse = directBSDFWiW;
+                                directBSDFLiColor = newIntersection.Le(-wiwInverse);
+                                if(directBSDFPdf1==0)
+                                {
+                                    directNaiveTotalColor = Color3f(0.0f);
+                                }
+                                else
+                                {
+                                    directNaiveTotalColor = directBSDFFColor * directBSDFLiColor * AbsDot(directBSDFWiW,isec.normalGeometric)/directBSDFPdf1;
+                                }
+
                             }
                             else
                             {
-                                directNaiveTotalColor = directBSDFFColor * directBSDFLiColor * AbsDot(directBSDFWiW,isec.normalGeometric)/directBSDFPdf1;
+                                directNaiveTotalColor = Color3f(0.0f);
                             }
 
                         }
@@ -132,12 +176,9 @@ Color3f FullLightingIntegrator::Li(const Ray &ray, const Scene &scene, std::shar
                         {
                             directNaiveTotalColor = Color3f(0.0f);
                         }
+                    }
 
-                    }
-                    else
-                    {
-                        directNaiveTotalColor = Color3f(0.0f);
-                    }
+
 
                     //MIS weighting
                     directLightPdf2 = scene.lights[chosenLightNum]->Pdf_Li(isec,directBSDFWiW);
@@ -154,6 +195,7 @@ Color3f FullLightingIntegrator::Li(const Ray &ray, const Scene &scene, std::shar
                         weightDirectLight1 = 1.f;
                         weightDirectLight2 = 1.f;
                     }
+
 
                     directTotalColor = directLightTotalColor*weightDirectLight1+directNaiveTotalColor*weightDirectBSDF1;
                     directTotalColor = 1.0f * scene.lights.size() * directTotalColor;

@@ -332,6 +332,7 @@ void MyGL::SceneLoadDialog()
     QStringRef local_path = filepath.leftRef(i+1);
     //Reset all of our objects
     scene.Clear();
+    scene.clearBVH();
     //Load new objects based on the JSON file chosen.
 
     json_reader.LoadSceneFromFile(file, local_path, scene);
@@ -424,11 +425,11 @@ void MyGL::RenderScene()
             QThreadPool::globalInstance()->start(rt);
 #else
             // Use this commented-out code to only render a tile with your desired pixel
-            //            Point2i debugPixel(200,200);
-            //            if(x0 < debugPixel.x && x1 >= debugPixel.x && y0 < debugPixel.y && y1 >= debugPixel.y)
-            //            {
-            //                rt->Render();
-            //            }
+//                        Point2i debugPixel(123,48);
+//                        if(x0 < debugPixel.x && x1 >= debugPixel.x && y0 < debugPixel.y && y1 >= debugPixel.y)
+//                        {
+//                            rt->Render();
+//                        }
             rt->Render();
             delete rt;
 #endif //MULTITHREAD

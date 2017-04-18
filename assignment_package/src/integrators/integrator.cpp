@@ -14,7 +14,7 @@ void Integrator::Render()
     for(Point2i pixel : tilePixels)
     {
         //Uncomment this to debug a particular pixel within this tile
-//        if(pixel.x != 198 || pixel.y != 387)
+//        if(pixel.x != 247 || pixel.y != 438)
 //        {
 //            continue;
 //        }
@@ -25,7 +25,16 @@ void Integrator::Render()
         {
             sample = sample + Point2f(pixel); // _sample_ is [0, 1), but it needs to be translated to the pixel's origin.
             // Generate a ray from this pixel sample
+
+
+
+//************************For pinhole camera**************************//
             Ray ray = camera->Raycast(sample);
+
+//************************For realistic camera*****************************//
+//            Ray ray = realCamera->Raycast(sample,sampler);
+
+
             // Get the L (energy) for the ray by calling Li(ray, scene, tileSampler, arena)
             // Li is implemented by Integrator subclasses, like DirectLightingIntegrator
             Color3f L = Li(ray, *scene, sampler, recursionLimit,Color3f(1.0f));

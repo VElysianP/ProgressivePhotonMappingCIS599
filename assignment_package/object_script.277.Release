@@ -44,6 +44,11 @@ INPUT(
 ./release\plasticmaterial.o
 ./release\bounds.o
 ./release\bvh.o
+./release\pointlight.o
+./release\spotlight.o
+./release\directionallight.o
+./release\realisticcamera.o
+./release\photon.o
 ./release\qrc_glsl.o
 ./release\qrc_sfx.o
 ./release\moc_mainwindow.o
