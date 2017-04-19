@@ -26,6 +26,7 @@ enum IntegratorType
     INDIRECT_LIGHTING,
     FULL_LIGHTING,
     NAIVE_LIGHTING,
+    PHOTON_MAPPING,
 };
 
 class MyGL

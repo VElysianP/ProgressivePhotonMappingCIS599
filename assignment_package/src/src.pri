@@ -52,7 +52,8 @@ SOURCES += \
     $$PWD/scene/lights/spotlight.cpp \
     $$PWD/scene/lights/directionallight.cpp \
     $$PWD/scene/realisticcamera.cpp \
-    $$PWD/scene/photon.cpp
+    $$PWD/scene/photon.cpp \
+    $$PWD/integrators/photonmappingintegrator.cpp
 
 HEADERS += \
     $$PWD/mainwindow.h \
@@ -106,4 +107,5 @@ HEADERS += \
     $$PWD/scene/lights/spotlight.h \
     $$PWD/scene/lights/directionallight.h \
     $$PWD/scene/realisticcamera.h \
-    $$PWD/scene/photon.h
+    $$PWD/scene/photon.h \
+    $$PWD/integrators/photonmappingintegrator.h

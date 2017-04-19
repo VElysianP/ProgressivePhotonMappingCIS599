@@ -46,4 +46,5 @@ protected:
 
     Bounds2i bounds;                  // The min and max bounds of the film to which this thread renders
     int recursionLimit;
+
 };

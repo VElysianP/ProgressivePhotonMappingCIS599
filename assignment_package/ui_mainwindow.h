@@ -227,6 +227,7 @@ public:
          << QApplication::translate("MainWindow", "Direct Lighting", 0)
          << QApplication::translate("MainWindow", "Indirect Lighting", 0)
          << QApplication::translate("MainWindow", "Full Lighting", 0)
+		 << QApplication::translate("MainWindow", "Photon Mapping", 0)
         );
         checkBox_BVH->setText(QApplication::translate("MainWindow", "Make BVH", 0));
         label_4->setText(QApplication::translate("MainWindow", "Max primitives in node:", 0));

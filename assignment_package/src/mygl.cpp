@@ -13,6 +13,7 @@
 #include <integrators/fulllightingintegrator.h>
 #include <scene/lights/diffusearealight.h>
 #include <QDateTime>
+#include <integrators/photonmappingintegrator.h>
 
 constexpr float screen_quad_pos[] = {
     1.0f, -1.0f, 0.0f, 1.0f, 1.0f,
@@ -419,6 +420,9 @@ void MyGL::RenderScene()
             case NAIVE_LIGHTING:
                 rt = new NaiveIntegrator(tileBounds, &scene, sampler->Clone(seed), recursionLimit);
                 break;
+            case PHOTON_MAPPING:
+                rt = new PhotonMappingIntegrator(tileBounds, &scene, sampler->Clone(seed), recursionLimit);
+                break;
             }
 #define MULTITHREAD // Comment this line out to be able to debug with breakpoints.
 #ifdef MULTITHREAD
@@ -528,6 +532,9 @@ void MyGL::slot_SetIntegratorType(int t)
         break;
     case 3:
         integratorType = FULL_LIGHTING;
+        break;
+    case 4:
+        integratorType = PHOTON_MAPPING;
         break;
     }
 }

@@ -190,7 +190,7 @@
           "name" : "Light Source",
           "type" : "DiffuseAreaLight",
           "lightColor" : [1,1,1],
-          "intensity" : 10,
+          "intensity" : 15,
           "transform" : {
             "translate" : [0,12,0],
             "rotate" : [90,0,0],
@@ -204,7 +204,7 @@
           "name" : "Light Source",
           "type" : "DiffuseAreaLight",
           "lightColor" : [1,1,1],
-          "intensity" : 70,
+          "intensity" : 80,
           "transform" : {
             "translate" : [0,3,-40],
             "rotate" : [0,0,0],

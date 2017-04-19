@@ -6,6 +6,7 @@
 #include <scene/geometry/shape.h>
 #include "bvh.h"
 #include <scene/realisticcamera.h>
+#include <scene/photon.h>
 
 class Primitive;
 class BVHAccel;
@@ -25,6 +26,7 @@ public:
     Film film;
 
     BVHAccel* bvh;
+    QList<std::shared_ptr<Photon>> scenePhoton;
 
     QList<std::shared_ptr<Drawable>> drawables;
 
