@@ -28,6 +28,8 @@ static const float PiOver4 = 0.78539816339744830961;
 static const float Sqrt2 = 1.41421356237309504880;
 static const float OneMinusEpsilon = 0.99999994;
 
+static const int totalPhoton = 10000;//the total number of photons inside the scene
+
 // We're going to create some type aliases to
 // give our code a little more context so it's
 // easier to interpret at a glance.

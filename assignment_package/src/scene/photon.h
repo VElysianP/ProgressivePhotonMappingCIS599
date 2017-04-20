@@ -3,17 +3,26 @@
 
 #include "globals.h"
 
+enum PhotonType
+{
+    UNKNOWN = -1,
+    DIRECT = 0,
+    CAUSTIC = 1,
+    GLOBALINDIRECT = 2
+};
+
 class Photon
 {
 public:
-    Photon();
-    Photon(const Point3f &position) : position(position),
-        phi(255*(atan2(position.y,position.x)+Pi)/(2*Pi)),
-        theta(255*(acos(position.x))/Pi){}
+    Photon(const Point3f &position,const Color3f &power, const Vector3f direction) :
+        position(position), power(power), direction(direction), flag(0), photonType(UNKNOWN){}
 
     Point3f position;
     Color3f power;
-    float phi, theta;//compressed incident direction
+
+    Vector3f direction;
+    PhotonType photonType;
+
     int flag;//flag used in kd-tree
 };
 

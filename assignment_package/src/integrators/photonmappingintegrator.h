@@ -15,6 +15,9 @@ public:
 
     virtual Color3f Li(const Ray& ray, const Scene& scene, std::shared_ptr<Sampler> sampler, int depth, Color3f throughputColor) const;
 
+    Color3f CausticColor(const Intersection &isec, const Ray &r);
+    Color3f GlobalIlluminationColor(const Intersection &isec, const Ray &r);
+
     SearchAdjcent(const Point3f &intersectionPoint, const Intersection &isec);
 
 

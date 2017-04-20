@@ -28,6 +28,7 @@ public:
     BVHAccel* bvh;
     QList<std::shared_ptr<Photon>> scenePhoton;
 
+
     QList<std::shared_ptr<Drawable>> drawables;
 
     void SetCamera(const Camera &c);

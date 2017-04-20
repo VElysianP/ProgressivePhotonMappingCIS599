@@ -39,7 +39,7 @@ public:
     virtual Color3f Li(const Ray& ray, const Scene& scene, std::shared_ptr<Sampler> sampler, int depth, Color3f throughputColor) const = 0;
 
     void PhotonTracing(const Scene& scene, std::shared_ptr<Sampler> sampler, const int depth);
-    void cachePhotonColor(const Ray &r, const Scene &scene, int depth);
+    void cachePhotonColor(const Ray &r, const Scene &scene, int depth, const Color3f lightColor);
 
     // Clamp the upper end of our bounds to not go past the edge of the film.
     void ClampBounds();

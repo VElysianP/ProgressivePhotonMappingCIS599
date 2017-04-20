@@ -1,0 +1,1 @@
+#include "globalilluminationphoton.h"

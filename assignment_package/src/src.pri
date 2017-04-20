@@ -53,7 +53,9 @@ SOURCES += \
     $$PWD/scene/lights/directionallight.cpp \
     $$PWD/scene/realisticcamera.cpp \
     $$PWD/scene/photon.cpp \
-    $$PWD/integrators/photonmappingintegrator.cpp
+    $$PWD/integrators/photonmappingintegrator.cpp \
+    $$PWD/scene/causticphoton.cpp \
+    $$PWD/scene/globalilluminationphoton.cpp
 
 HEADERS += \
     $$PWD/mainwindow.h \
@@ -108,4 +110,6 @@ HEADERS += \
     $$PWD/scene/lights/directionallight.h \
     $$PWD/scene/realisticcamera.h \
     $$PWD/scene/photon.h \
-    $$PWD/integrators/photonmappingintegrator.h
+    $$PWD/integrators/photonmappingintegrator.h \
+    $$PWD/scene/causticphoton.h \
+    $$PWD/scene/globalilluminationphoton.h

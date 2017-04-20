@@ -132,6 +132,8 @@ void Scene::Clear()
     materials.clear();
     drawables.clear();
     camera = Camera();
+    realCamera = RealisticCamera();
+    scenePhoton.clear();
     film = Film();
 }
 

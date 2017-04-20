@@ -46,8 +46,8 @@ Color3f FullLightingIntegrator::Li(const Ray &ray, const Scene &scene, std::shar
             {
                 accumulateRayColor += throughputColor * isec.Le(-processingRay.direction);
             }
-//            else
-//            {
+            else
+            {
                 //if the intersection hits a light
               if(isec.objectHit->GetLight()!=nullptr)
 //                if(isec.objectHit->areaLight!=nullptr)
@@ -217,7 +217,7 @@ Color3f FullLightingIntegrator::Li(const Ray &ray, const Scene &scene, std::shar
                     }
 
                 }
-//            }
+            }
 
                 //Russian Roulette Ray Termination
 
