@@ -176,9 +176,13 @@ Color3f PhotonMappingIntegrator::Li(const Ray& ray, const Scene& scene, std::sha
 
 
                     //add up caustic and global Color
+                    Color3f causticColor = CausticColor(isec,newRay);
+                    Color3f globalIlluimationColor = GlobalIlluminationColor(isec,newRay);
+
+                    //do we need to do some weighting to the overall color????? Or just add them together????
+                    return directTotalColor + causticColor + globalIlluimationColor;
 
                 }
-
             }
         }
         //no intersection with the scene so that the color would be black
