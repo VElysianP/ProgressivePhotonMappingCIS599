@@ -22,6 +22,7 @@ void Integrator::Render()
     if(photonMap.size()!=0)
     {
         tree.root = new KdNode(photonMap[0],photonMap[0].photonType,photonMap[0].power);
+//        tree.root->splitAxis = tree.chooseSplitAxis(tree.root,0);
         for(int i = 1 ; i < photonMap.size();++i)
         {
 //            KdNode* tempNode;
@@ -34,10 +35,10 @@ void Integrator::Render()
     for(Point2i pixel : tilePixels)
     {
         //Uncomment this to debug a particular pixel within this tile
-        if(pixel.x != 504 || pixel.y != 572)
-        {
-            continue;
-        }
+//        if(pixel.x != 404 || pixel.y != 418)
+//        {
+//            continue;
+//        }
         Color3f pixelColor(0.f);
         // Ask our sampler for a collection of stratified samples, then raycast through each sample
         std::vector<Point2f> pixelSamples = sampler->GenerateStratifiedSamples();
@@ -66,6 +67,12 @@ void Integrator::Render()
         film->SetPixelColor(pixel, glm::clamp(pixelColor, 0.f, 1.f));
     }
     //We're done here! All pixels have been given an averaged color.
+    //do deletion
+//    for(auto mapPhs : photonMap){
+//        free(mapPhs);
+//    }
+//    photonMap.clear();
+//    tree.TreeDelete(tree.root);
 }
 
 

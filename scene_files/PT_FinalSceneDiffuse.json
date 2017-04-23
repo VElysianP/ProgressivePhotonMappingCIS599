@@ -17,7 +17,7 @@
           "name" : "Back Wall",
           "material" : "texturedMaterial",
           "transform" : {
-            "translate" : [0,2.5,5],
+            "translate" : [0,2.5,8],
             "rotate" : [0,180,0],
             "scale" : [20, 20, 1]
           }
@@ -214,7 +214,7 @@
           "name" : "Light Source",
           "type" : "DiffuseAreaLight",
           "lightColor" : [1,1,1],
-          "intensity" : 80,
+          "intensity" : 150,
           "transform" : {
             "translate" : [0,3,-40],
             "rotate" : [0,0,0],

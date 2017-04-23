@@ -19,8 +19,8 @@ struct KdNode{
     PhotonType photonType;
     Color3f photonColor;
 
-    KdNode(Photon &p, PhotonType type, Color3f photonColor): children1(nullptr), children2(nullptr), splitAxis(UNKNOWN_AXIS), position(p.position),
-    photonType(type), photonColor(photonColor){}
+    KdNode(Photon &p, PhotonType type, Color3f photonColor): children1(nullptr), children2(nullptr), position(p.position),
+    photonType(type), photonColor(photonColor),splitAxis(UNKNOWN_AXIS){}
 
 };
 
@@ -28,10 +28,11 @@ class KdTree{
    public:
     KdNode *root;
 
-    KdNode* NewNode(Photon ph)
+    KdNode* NewNode(Photon ph,int depth)
     {
         KdNode* temp = new KdNode(ph,ph.photonType,ph.power);
          temp->children1 = temp->children2 = nullptr;
+         temp->splitAxis = chooseSplitAxis(temp,depth);
          return temp;
     }
 
@@ -39,7 +40,7 @@ class KdTree{
     {
         if(root == nullptr)
         {
-            return NewNode(ph);
+            return NewNode(ph,depth);
         }
         SplitAxis cd = chooseSplitAxis(root,depth);
 
@@ -112,37 +113,69 @@ class KdTree{
         {
             splitAxis = Z_AXIS;
         }
+        node1->splitAxis = splitAxis;
         return splitAxis;
     }
 
     void NearPhotons(Point3f position, KdNode* node, QList<KdNode*> nodeList)
     {
-        float distance = glm::length(position-node->position);
-        //does not meet the itself
-
-        if((distance>0)&&(distance<=search_radius))
+        if(node==nullptr)
         {
-            nodeList.push_back(node);
-        }
-
-        SplitAxis split = node->splitAxis;
-        if(glm::length(position - node->position) > search_radius)
-        {
-            if(position[split] <= node->position[split])
-            {
-                NearPhotons(position,node->children1,nodeList);
-            }
-            else
-            {
-                NearPhotons(position,node->children2,nodeList);
-            }
+            return;
         }
         else
         {
-            NearPhotons(position,node->children1,nodeList);
-            NearPhotons(position,node->children2,nodeList);
-        }
+            float distance = glm::length(position-node->position);
+            //does not meet the itself
+            if((distance>0)&&(distance<=search_radius+FLT_EPSILON))
+            {
+                nodeList.push_back(node);
+            }
 
+            SplitAxis split = node->splitAxis;
+
+            if((node->children1!=nullptr)&&(node->children2!=nullptr))
+            {
+                if(std::abs(position[split]-node->children1->position[split]) <= (std::abs(position[split]-node->children2->position[split])))
+                {
+                    NearPhotons(position,node->children1,nodeList);
+                }
+                else
+                {
+                    NearPhotons(position,node->children2,nodeList);
+                }
+            }
+            else
+            {
+                if(node->children1!=nullptr)
+                {
+                    NearPhotons(position,node->children1,nodeList);
+                }
+                else
+                {
+                    NearPhotons(position,node->children2,nodeList);
+                }
+            }
+        }
+    }
+
+    void TreeDelete(KdNode* root)
+    {
+        if((root->children1==nullptr)&&(root->children2==nullptr))
+        {
+            free(root);
+        }
+        else
+        {
+            if(root->children1!=nullptr)
+            {
+                TreeDelete(root->children1);
+            }
+            else
+            {
+                TreeDelete(root->children2);
+            }
+        }
     }
 
 

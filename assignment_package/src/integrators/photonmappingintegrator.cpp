@@ -231,10 +231,18 @@ Color3f PhotonMappingIntegrator::CausticColor(const Intersection &isec, const Ra
             }
         }
         totalColor = Color3f(totalColor.x/nearNodes.size(),totalColor.y/nearNodes.size(),totalColor.z/nearNodes.size());
+        for(auto nearNode : nearNodes){
+            delete nearNode;
+        }
+        nearNodes.clear();
         return totalColor;
     }
     else
     {
+        for(auto nearNode : nearNodes){
+            delete nearNode;
+        }
+        nearNodes.clear();
         return totalColor;
     }
 }
@@ -273,10 +281,19 @@ Color3f PhotonMappingIntegrator::GlobalIlluminationColor(const Intersection &ise
             }
         }
         totalColor = Color3f(totalColor.x/nearNodes.size(),totalColor.y/nearNodes.size(),totalColor.z/nearNodes.size());
+
+        for(auto nearNode : nearNodes){
+            delete nearNode;
+        }
+        nearNodes.clear();
         return totalColor;
     }
     else
     {
+        for(auto nearNode : nearNodes){
+            delete nearNode;
+        }
+        nearNodes.clear();
         return Color3f(0.f);
     }
 
