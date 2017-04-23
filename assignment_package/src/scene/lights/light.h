@@ -2,6 +2,8 @@
 #include <globals.h>
 #include <scene/transform.h>
 #include <raytracing/intersection.h>
+#include <samplers/sampler.h>
+#include <warpfunctions.h>
 
 class Intersection;
 
@@ -34,6 +36,7 @@ class Light
     virtual Color3f Sample_Li(const Intersection &ref, const Point2f &xi,
                                                 Vector3f *wi, Float *pdf) const = 0;
 
+    virtual Ray EmitSampleLight(std::shared_ptr<Sampler> sampler) const = 0;
 
     virtual float Pdf_Li(const Intersection &ref, const Vector3f &wi) const = 0;
     QString name; // For debugging
@@ -42,9 +45,9 @@ class Light
     Point3f pLight;
     LightType lightType;
 
+    Color3f emittedLight;
 
-
-  protected:
+protected:
     const Transform transform;
 };
 
@@ -55,4 +58,5 @@ public:
     // Returns the light emitted from a point on the light's surface _isect_
     // along the direction _w_, which is leaving the surface.
     virtual Color3f L(const Intersection &isect, const Vector3f &w) const = 0;
+    virtual Ray EmitSampleLight(std::shared_ptr<Sampler> sampler) const = 0;
 };

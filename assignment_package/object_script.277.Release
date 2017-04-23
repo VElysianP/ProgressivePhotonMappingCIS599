@@ -50,6 +50,9 @@ INPUT(
 ./release\realisticcamera.o
 ./release\photon.o
 ./release\photonmappingintegrator.o
+./release\causticphoton.o
+./release\globalilluminationphoton.o
+./release\kdtree.o
 ./release\qrc_glsl.o
 ./release\qrc_sfx.o
 ./release\moc_mainwindow.o

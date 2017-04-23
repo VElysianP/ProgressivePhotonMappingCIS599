@@ -1,6 +1,1 @@
-#include "photon.h"
-
-Photon::Photon()
-{
-
-}
+//#include "photon.h"

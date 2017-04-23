@@ -1,6 +1,2 @@
-#include "causticphoton.h"
+//#include "causticphoton.h"
 
-CausticPhoton::CausticPhoton()
-{
-
-}

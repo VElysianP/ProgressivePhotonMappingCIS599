@@ -55,7 +55,8 @@ SOURCES += \
     $$PWD/scene/photon.cpp \
     $$PWD/integrators/photonmappingintegrator.cpp \
     $$PWD/scene/causticphoton.cpp \
-    $$PWD/scene/globalilluminationphoton.cpp
+    $$PWD/scene/globalilluminationphoton.cpp \
+    $$PWD/scene/kdtree.cpp
 
 HEADERS += \
     $$PWD/mainwindow.h \
@@ -112,4 +113,5 @@ HEADERS += \
     $$PWD/scene/photon.h \
     $$PWD/integrators/photonmappingintegrator.h \
     $$PWD/scene/causticphoton.h \
-    $$PWD/scene/globalilluminationphoton.h
+    $$PWD/scene/globalilluminationphoton.h \
+    $$PWD/scene/kdtree.h

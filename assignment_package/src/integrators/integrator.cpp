@@ -14,17 +14,30 @@ void Integrator::Render()
 
 
     //*****************specially used in photon mapping************************
-    PhotonTracing(scene,sampler,recursionLimit);
+    PhotonTracing(*scene,sampler,recursionLimit);
 
 
+    std::cout<<"finish1"<<std::endl;
+
+    if(photonMap.size()!=0)
+    {
+        tree.root = new KdNode(photonMap[0],photonMap[0].photonType,photonMap[0].power);
+        for(int i = 1 ; i < photonMap.size();++i)
+        {
+//            KdNode* tempNode;
+//            tempNode = tree.Insert(photonMap[i],tree.root);
+            KdNode* tempNode = tree.Insert(tree.root,photonMap[i]);
+        }
+    }
+    std::cout<<"finish2"<<std::endl;
     // For every pixel in the FilmTile:
     for(Point2i pixel : tilePixels)
     {
         //Uncomment this to debug a particular pixel within this tile
-//        if(pixel.x != 247 || pixel.y != 438)
-//        {
-//            continue;
-//        }
+        if(pixel.x != 504 || pixel.y != 572)
+        {
+            continue;
+        }
         Color3f pixelColor(0.f);
         // Ask our sampler for a collection of stratified samples, then raycast through each sample
         std::vector<Point2f> pixelSamples = sampler->GenerateStratifiedSamples();
@@ -44,7 +57,7 @@ void Integrator::Render()
 
             // Get the L (energy) for the ray by calling Li(ray, scene, tileSampler, arena)
             // Li is implemented by Integrator subclasses, like DirectLightingIntegrator
-            Color3f L = Li(ray, *scene, sampler, recursionLimit,Color3f(1.0f));
+            Color3f L = Li(ray, *scene, sampler, recursionLimit,Color3f(1.0f),tree);
             // Accumulate color in the pixel
             pixelColor += L;
         }
@@ -66,57 +79,29 @@ void Integrator::ClampBounds()
 void Integrator::PhotonTracing(const Scene &scene, std::shared_ptr<Sampler> sampler, const int depth)
 {
     int lightsTotal = scene.lights.size();// the number of lights of the scene
-    float totalLightColor;//the total R+G+B float color of all the lights in the scene
-    float photonWeight[lightsTotal];//the R+G+B float color of light sources
-    int numberPhoton[lightTotal];//the number of the photons of every lights
+    int numberPhoton[lightsTotal];//the number of the photons of every lights
+    int totalIntensity = 0;
 
     //preprocess of the weight of the photon
     for(int i= 0 ; i < lightsTotal ; i++)
     {
-        totalLightColor = totalLightColor + scene.lights[i]->emittedLight.x + scene.lights[i]->emittedLight.y + scene.lights[i]->emittedLight.z;
-        photonWeight[i] = scene.lights[i]->emittedLight.x + scene.lights[i]->emittedLight.y + scene.lights[i]->emittedLight.z;
+        totalIntensity = totalIntensity + scene.lights[i]->emittedLight[0] + scene.lights[i]->emittedLight[1]+ scene.lights[i]->emittedLight[2];
     }
 
+    for(int j =0 ; j < lightsTotal ; j++)
+    {
+        numberPhoton[j] = totalPhoton * (scene.lights[j]->emittedLight.x + scene.lights[j]->emittedLight.y + scene.lights[j]->emittedLight.z)/totalIntensity;
+    }
 
     //calculate the number of photons shot from every ligths
-    for(int j = 0 ; j < lightsTotal ; j++)
+    for(int k = 0 ; k < lightsTotal ; k++)
     {
-        numberPhoton[j] = std::floor(totalPhoton * photonWeight[j]/totalLightColor);
+        std::shared_ptr<Light> chosenLight = scene.lights[k];
 
-        shared_ptr<Light> chosenLight = scene.lights[j];
-
-        for(int tempLightCount = 0 ; tempLightCount < numberPhoton[j] ; tempLightCount++)
+        for(int tempLightCount = 0 ; tempLightCount < numberPhoton[k] ; tempLightCount++)
         {
-            if(chosenLight->lightType == DIFFUSEAREALIGHT)
-            {
-                Point2f sampleOnLight = sampler->Get2D();
-                Point3f pointOnLight = Point3f(chosenLight->transform.T()*glm::vec4(sampleOnLight.x - 0.5,sampleOnLight.y - 0.5,0.0f,1.0f));
-
-                Point2f sampleRayOut = sampler->Get2D();
-                Point3f pointOnLightBefore = WarpFunctions::squareToHemisphereCosine(sampleRayOut);
-                Point3f pointRayOut = Point3f(chosenLight->transform.T()*glm::vec4(pointOnLightBefore.x,pointOnLightBefore.y,pointOnLightBefore.z,1.0f));
-
-                Ray r = Ray(pointOnLight,glm::normalize(pointRayOut - PointOnLight));
-
-
-                cachePhotonColor(r,scene,depth,chosenLight->emittedLight);
-           }
-            if(chosenLight->lightType == SPOTLIGHT)
-            {
-                Point2f sampleRayOut = sampler->Get2D();
-                Point3f pointOnLightBefore = WarpFunctions::squareToDiskConcentric(sampleRayOut);
-                //to match the point light function I have written, set the disk into xoz plane
-
-                pointOnLightBefore.z = pointOnLightBefore.y;
-                pointOnLightBefore.y = -1.f;//test on this value
-
-                Point3f pointRayOut = Point3f(chosenLight->transform.T()*glm::vec4(pointOnLightBefore.x,pointOnLightBefore.y,pointOnLightBefore.z,1.0f));
-                Ray r =Ray(chosenLight->pLight, glm::normalize(pointRayOut - chosenLight->pLight));
-
-                cachePhotonColor(r,scene,depth,chosenLight->emittedLight);
-
-            }
-            //add up other light types
+            Ray lightRay = chosenLight->EmitSampleLight(sampler);
+            cachePhotonColor(lightRay,scene,depth,chosenLight->emittedLight);
         }
     }
 }
@@ -137,10 +122,14 @@ void Integrator::cachePhotonColor(const Ray &r, const Scene &scene, int depth, c
         isec = Intersection();//initialize the intersection
         Vector3f woW = -newRay.direction;
         Vector3f wiW;
-        float *currentPdf;
+        float currentPdf;
 
         if(scene.Intersect(newRay,&isec))
         {
+            if(!isec.ProduceBSDF())
+            {
+                return;
+            }
             Color3f fColor = isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&currentPdf,BSDF_ALL,&typeBxdf);
             specularBounce = false;
             if((typeBxdf & BSDF_SPECULAR)!=0)
@@ -170,8 +159,8 @@ void Integrator::cachePhotonColor(const Ray &r, const Scene &scene, int depth, c
                 {
                     Color3f cacheColor = fColor * currentColor * AbsDot(wiW,isec.bsdf->normal);
                     currentColor = cacheColor;
-                    shared_ptr<CausticPhoton> photonCache(new CausticPhoton(isec.point, cacheColor, wiW));
-                    scene.scenePhoton.push_back(photonCache);
+                    Photon ph = Photon(isec.point,cacheColor,wiW,CAUSTIC);
+                    photonMap.push_back(ph);
                     newRay = Ray(isec.point,wiW);
                 }
                 //if last bounce is not specular bounce, we should cache the global illumination photon
@@ -179,8 +168,8 @@ void Integrator::cachePhotonColor(const Ray &r, const Scene &scene, int depth, c
                 {
                     Color3f cacheColor = fColor * currentColor *AbsDot(wiW, isec.bsdf->normal);
                     currentColor = cacheColor;
-                    shared_ptr<GlobalIlluminationPhoton> photonCache(new GlobalIlluminationPhoton(isec.point,cacheColor,wiW));
-                    scene.scenePhoton.push_back(photonCache);
+                    Photon ph = Photon(isec.point,cacheColor,wiW,GLOBALINDIRECT);
+                    photonMap.push_back(ph);
                     newRay = Ray(isec.point,wiW);
                 }
 

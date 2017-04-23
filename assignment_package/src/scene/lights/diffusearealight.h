@@ -9,9 +9,10 @@ public:
     DiffuseAreaLight(const Transform &t, const Color3f& Le,
                      const std::shared_ptr<Shape>& shape,
                      bool twoSided = false)
-        : AreaLight(t), emittedLight(Le), shape(shape),
+        : AreaLight(t),  shape(shape),
           area(shape->Area()), twoSided(twoSided)
-    {lightType = DIFFUSEAREALIGHT;}
+    {lightType = DIFFUSEAREALIGHT;
+     emittedLight = Le;}
 
     // Returns the energy emitted along _w_ from a point on our surface _isect_
     // If _twoSided_ is false, then we must check if _w_ is in the same direction
@@ -26,11 +27,12 @@ public:
     Color3f Sample_Li(const Intersection &ref, const Point2f &xi,
                                          Vector3f *wi, Float *pdf) const;
 
+    virtual Ray EmitSampleLight(std::shared_ptr<Sampler> sampler) const;
 
     virtual float Pdf_Li(const Intersection &ref, const Vector3f &wi) const;
 
     // Member variables
-    const Color3f emittedLight;
+
     std::shared_ptr<Shape> shape;
     float area;    // The surface area of our _shape_
     bool twoSided; // If true, then this emits light on both sides of its surface normal

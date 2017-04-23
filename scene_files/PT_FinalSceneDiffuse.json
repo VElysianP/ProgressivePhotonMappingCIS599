@@ -12,6 +12,16 @@
         "height": 1024
       },
       "primitives" : [
+	    {
+          "shape" : "SquarePlane",
+          "name" : "Back Wall",
+          "material" : "texturedMaterial",
+          "transform" : {
+            "translate" : [0,2.5,5],
+            "rotate" : [0,180,0],
+            "scale" : [20, 20, 1]
+          }
+        },
 		{
           "shape" : "Cube",
           "name" : "Floor1",
@@ -283,6 +293,12 @@
           "Kd" : [1, 1, 1],
           "sigma": 0,
 		  "textureMap": "MikuFigure/roomitems_002_body.png"
+        },
+		{
+          "type": "MatteMaterial",
+          "name": "texturedMaterial",
+          "Kd": [1, 1, 1],
+          "textureMap": "background.jpg"
         }
       ]
     }

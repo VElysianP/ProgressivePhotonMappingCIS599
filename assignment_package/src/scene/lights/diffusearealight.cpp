@@ -49,3 +49,32 @@ float DiffuseAreaLight::Pdf_Li(const Intersection &ref, const Vector3f &wi) cons
 //    return *currentPdf;
     return shape->Pdf(ref,wi);
 }
+
+Ray DiffuseAreaLight::EmitSampleLight(std::shared_ptr<Sampler> sampler) const
+{
+
+    //in worlds sapce
+    //suppose that all of the diffuse area lights are square planes
+    //get a point2f in 0-1
+    Point2f samplePointOnLight = sampler->Get2D();
+    Point3f worldSamplePoint = Point3f(transform.T()*glm::vec4(samplePointOnLight.x-0.5f,samplePointOnLight.y-0.5,0.0f,1.0f));
+
+    int seed = std::rand();
+    sampler->Clone(seed);
+    Point2f sampleRayOut = sampler->Get2D();
+    Point3f pointOnLightBefore;
+//    if(twoSided)
+//    {
+//        pointOnLightBefore = WarpFunctions::squareToSphereUniform(sampleRayOut);
+//    }
+//    else
+//    {
+        pointOnLightBefore = WarpFunctions::squareToHemisphereCosine(sampleRayOut);
+//    }
+
+    Point3f pointRayOut = Point3f(transform.T()*glm::vec4(pointOnLightBefore.x,pointOnLightBefore.y,pointOnLightBefore.z,1.0f));
+
+    //r is in the world space
+    Ray r = Ray(worldSamplePoint,glm::normalize(pointRayOut - worldSamplePoint));
+    return r;
+}

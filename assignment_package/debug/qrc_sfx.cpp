@@ -7,7 +7,7 @@
 *****************************************************************************/
 
 static const unsigned char qt_resource_data[] = {
-  // F:/Course/CIS561 Advanced Computer Graphics/HW8/hw08_bvh/assignment_package/include/complete.wav
+  // F:/Course/CIS561 Advanced Computer Graphics/Final2/path-tracer-nights-of-the-final-project-ii-VElysianP/assignment_package/include/complete.wav
   0x0,0x2,0xf,0x44,
   0x52,
   0x49,0x46,0x46,0x3c,0xf,0x2,0x0,0x57,0x41,0x56,0x45,0x66,0x6d,0x74,0x20,0x10,

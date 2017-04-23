@@ -10,6 +10,7 @@ class Material;
 class BSDF;
 class Primitive;
 
+
 class Intersection
 {
 public:

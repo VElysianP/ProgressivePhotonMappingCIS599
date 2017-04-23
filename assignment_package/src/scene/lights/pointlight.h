@@ -15,9 +15,11 @@ public:
 
 
     virtual float Pdf_Li(const Intersection &ref, const Vector3f &wi) const;
+
+    virtual Ray EmitSampleLight(std::shared_ptr<Sampler> sampler) const;
+
     virtual Color3f L(const Intersection &isect, const Vector3f &w) const;
 
-    const Color3f emittedLight;
     const Point3f pLight;
 };
 

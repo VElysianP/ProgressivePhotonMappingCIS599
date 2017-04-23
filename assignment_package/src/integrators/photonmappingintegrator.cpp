@@ -1,13 +1,13 @@
 #include "photonmappingintegrator.h"
 
 
-Color3f PhotonMappingIntegrator::Li(const Ray& ray, const Scene& scene, std::shared_ptr<Sampler> sampler, int depth, Color3f throughputColor) const
+Color3f PhotonMappingIntegrator::Li(const Ray& ray, const Scene& scene, std::shared_ptr<Sampler> sampler, int depth, Color3f throughputColor,KdTree tree) const
 {
 
     Intersection isec;
     Ray newRay = ray;
     bool specularBounce = false;
-    BxDFType typeBxdf;
+    BxDFType typebxdf;
     int chosenLightNum = std::floor(sampler->Get1D()*scene.lights.size());
 
     float directLightPdf1 = 0.f;
@@ -23,6 +23,7 @@ Color3f PhotonMappingIntegrator::Li(const Ray& ray, const Scene& scene, std::sha
     Color3f directLightTotalColor = Color3f(0.0f);
     Color3f directNaiveTotalColor = Color3f(0.0f);
     Color3f directTotalColor = Color3f(0.0f);
+    Color3f totalColor = Color3f(1.0f);
 
     while(depth>0)
     {
@@ -40,11 +41,11 @@ Color3f PhotonMappingIntegrator::Li(const Ray& ray, const Scene& scene, std::sha
             else
             {
                 float currentPdf;
-                Color3f directBSDFFColor = isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&currentPdf,BSDF_ALL,&typebxdf);
+                Color3f testColor = isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&currentPdf,BSDF_ALL,&typebxdf);
                 specularBounce = false;
                 if((typebxdf & BSDF_SPECULAR)!=0)
                 {
-                    specularBounce = true;
+                    specularBounce = true;//which means that the surface is a specular surface
                 }
 
                 //if specular bounce do ray tracing
@@ -52,7 +53,8 @@ Color3f PhotonMappingIntegrator::Li(const Ray& ray, const Scene& scene, std::sha
                 {
                     //************************do ray tracing
                     depth--;
-                    newRay = Ray(isec.point,&wiW);
+                    totalColor = totalColor * testColor;
+                    newRay = Ray(isec.point,wiW);
                 }
                 //first do MIS and then add up caustic and global photons
                 else
@@ -176,11 +178,12 @@ Color3f PhotonMappingIntegrator::Li(const Ray& ray, const Scene& scene, std::sha
 
 
                     //add up caustic and global Color
-                    Color3f causticColor = CausticColor(isec,newRay);
-                    Color3f globalIlluimationColor = GlobalIlluminationColor(isec,newRay);
+                    Color3f causticColor = CausticColor(isec,newRay,tree);
+                    Color3f globalIlluimationColor = GlobalIlluminationColor(isec,newRay,tree);
 
                     //do we need to do some weighting to the overall color????? Or just add them together????
-                    return directTotalColor + causticColor + globalIlluimationColor;
+                    totalColor = totalColor *(directTotalColor + causticColor + globalIlluimationColor);
+                    return totalColor;
 
                 }
             }
@@ -194,7 +197,7 @@ Color3f PhotonMappingIntegrator::Li(const Ray& ray, const Scene& scene, std::sha
 }
 
 
-float PowerHeuristic(int nf, Float fPdf, int ng, Float gPdf)
+float PhotonMappingIntegrator::PowerHeuristic(int nf, float fPdf, int ng, float gPdf) const
 {
     //TODO
     float f = nf*fPdf, g=ng*gPdf;
@@ -209,16 +212,73 @@ float PowerHeuristic(int nf, Float fPdf, int ng, Float gPdf)
     }
 }
 
-Color3f PhotonMappingIntegrator::CausticColor(const Intersection &isec, const Ray &r)
+Color3f PhotonMappingIntegrator::CausticColor(const Intersection &isec, const Ray &r ,KdTree tree) const
 {
     //search for the kd-tree and find the caustic color of the area
-    return Color3f(0.0f);
+    Point3f positionToSearch = isec.point;
+    QList<KdNode*> nearNodes;
+    Color3f totalColor = Color3f(0.0f);
+
+    tree.NearPhotons(positionToSearch,tree.root,nearNodes);
+
+    if(nearNodes.size()!=0)
+    {
+        for(int i = 0; i < nearNodes.size() ; ++i)
+        {
+            if(nearNodes[i]->photonType==CAUSTIC)
+            {
+                totalColor = totalColor + nearNodes[i]->photonColor;
+            }
+        }
+        totalColor = Color3f(totalColor.x/nearNodes.size(),totalColor.y/nearNodes.size(),totalColor.z/nearNodes.size());
+        return totalColor;
+    }
+    else
+    {
+        return totalColor;
+    }
 }
 
-Color3f PhotonMappingIntegrator::GlobalIlluminationColor(const Intersection &isec, const Ray &r)
+Color3f PhotonMappingIntegrator::GlobalIlluminationColor(const Intersection &isec, const Ray &r,KdTree tree) const
 {
-    //search for the kd-tree and find the global illumination of the area
-    // how many wis do we need????
-    return Color3f(0.0f);
+    Point3f positionToSearch = isec.point;
+    Vector3f woW = -r.direction;
+    QList<KdNode*> nearNodes;
+    Color3f totalColor = Color3f(0.f);
+
+    for(int i = 0 ; i <max_photon_search; ++i)
+    {
+        float currentPdf;
+        Vector3f wiW;
+//        if(!isec.ProduceBSDF())
+//        {
+//            return Color3f(0.f);
+//        }
+        Color3f fColor = isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&currentPdf);
+        Intersection newIsec = Intersection();
+        Ray newRay = Ray(positionToSearch,wiW);
+        if(scene->Intersect(newRay,&newIsec))
+        {
+            tree.NearPhotons(newIsec.point,tree.root,nearNodes);
+        }
+
+    }
+    if(nearNodes.size()!=0)
+    {
+        for(int j = 0 ; j < nearNodes.size();++j)
+        {
+            if(nearNodes[j]->photonType == GLOBALINDIRECT)
+            {
+                totalColor = totalColor + nearNodes[j]->photonColor;
+            }
+        }
+        totalColor = Color3f(totalColor.x/nearNodes.size(),totalColor.y/nearNodes.size(),totalColor.z/nearNodes.size());
+        return totalColor;
+    }
+    else
+    {
+        return Color3f(0.f);
+    }
+
 }
 

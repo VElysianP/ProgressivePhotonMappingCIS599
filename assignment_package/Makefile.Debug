@@ -93,7 +93,10 @@ SOURCES       = src\main.cpp \
 		src\scene\lights\directionallight.cpp \
 		src\scene\realisticcamera.cpp \
 		src\scene\photon.cpp \
-		src\integrators\photonmappingintegrator.cpp debug\qrc_glsl.cpp \
+		src\integrators\photonmappingintegrator.cpp \
+		src\scene\causticphoton.cpp \
+		src\scene\globalilluminationphoton.cpp \
+		src\scene\kdtree.cpp debug\qrc_glsl.cpp \
 		debug\qrc_sfx.cpp \
 		debug\moc_mainwindow.cpp \
 		debug\moc_mygl.cpp \
@@ -150,6 +153,9 @@ OBJECTS       = debug/main.o \
 		debug/realisticcamera.o \
 		debug/photon.o \
 		debug/photonmappingintegrator.o \
+		debug/causticphoton.o \
+		debug/globalilluminationphoton.o \
+		debug/kdtree.o \
 		debug/qrc_glsl.o \
 		debug/qrc_sfx.o \
 		debug/moc_mainwindow.o \
@@ -209,7 +215,10 @@ DIST          =  src\mainwindow.h \
 		src\scene\lights\directionallight.h \
 		src\scene\realisticcamera.h \
 		src\scene\photon.h \
-		src\integrators\photonmappingintegrator.h src\main.cpp \
+		src\integrators\photonmappingintegrator.h \
+		src\scene\causticphoton.h \
+		src\scene\globalilluminationphoton.h \
+		src\scene\kdtree.h src\main.cpp \
 		src\mainwindow.cpp \
 		src\mygl.cpp \
 		src\scene\camera.cpp \
@@ -259,7 +268,10 @@ DIST          =  src\mainwindow.h \
 		src\scene\lights\directionallight.cpp \
 		src\scene\realisticcamera.cpp \
 		src\scene\photon.cpp \
-		src\integrators\photonmappingintegrator.cpp
+		src\integrators\photonmappingintegrator.cpp \
+		src\scene\causticphoton.cpp \
+		src\scene\globalilluminationphoton.cpp \
+		src\scene\kdtree.cpp
 QMAKE_TARGET  = 277
 DESTDIR        = debug\ #avoid trailing-slash linebreak
 TARGET         = 277.exe
@@ -298,7 +310,7 @@ dist:
 	$(ZIP) 277.zip $(SOURCES) $(DIST) pathtracer.pro D:\QT\5.4\mingw491_32\mkspecs\features\spec_pre.prf D:\QT\5.4\mingw491_32\mkspecs\qdevice.pri D:\QT\5.4\mingw491_32\mkspecs\features\device_config.prf D:\QT\5.4\mingw491_32\mkspecs\common\shell-win32.conf D:\QT\5.4\mingw491_32\mkspecs\qconfig.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_axbase.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_axbase_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_axcontainer.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_axcontainer_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_axserver.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_axserver_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_bluetooth.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_bluetooth_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_bootstrap_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_clucene_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_concurrent.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_concurrent_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_core.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_core_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_dbus.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_dbus_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_declarative.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_declarative_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_designer.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_designer_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_designercomponents_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_enginio.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_enginio_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_gui.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_gui_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_help.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_help_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_location.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_location_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_multimedia.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_multimedia_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_multimediawidgets.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_multimediawidgets_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_network.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_network_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_nfc.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_nfc_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_opengl.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_opengl_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_openglextensions.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_openglextensions_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_platformsupport_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_positioning.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_positioning_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_printsupport.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_printsupport_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_qml.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_qml_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_qmldevtools_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_qmltest.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_qmltest_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_quick.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_quick_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_quickparticles_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_quickwidgets.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_quickwidgets_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_script.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_script_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_scripttools.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_scripttools_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_sensors.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_sensors_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_serialport.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_serialport_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_sql.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_sql_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_svg.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_svg_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_testlib.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_testlib_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_uitools.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_uitools_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_webchannel.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_webchannel_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_webkit.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_webkit_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_webkitwidgets.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_webkitwidgets_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_websockets.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_websockets_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_widgets.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_widgets_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_winextras.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_winextras_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_xml.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_xml_private.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_xmlpatterns.pri D:\QT\5.4\mingw491_32\mkspecs\modules\qt_lib_xmlpatterns_private.pri D:\QT\5.4\mingw491_32\mkspecs\features\qt_functions.prf D:\QT\5.4\mingw491_32\mkspecs\features\qt_config.prf D:\QT\5.4\mingw491_32\mkspecs\features\win32\qt_config.prf D:\QT\5.4\mingw491_32\mkspecs\win32-g++\qmake.conf D:\QT\5.4\mingw491_32\mkspecs\features\spec_post.prf D:\QT\5.4\mingw491_32\mkspecs\features\exclusive_builds.prf D:\QT\5.4\mingw491_32\mkspecs\features\default_pre.prf D:\QT\5.4\mingw491_32\mkspecs\features\win32\default_pre.prf src\src.pri D:\QT\5.4\mingw491_32\mkspecs\features\resolve_config.prf D:\QT\5.4\mingw491_32\mkspecs\features\exclusive_builds_post.prf D:\QT\5.4\mingw491_32\mkspecs\features\default_post.prf D:\QT\5.4\mingw491_32\mkspecs\features\build_pass.prf D:\QT\5.4\mingw491_32\mkspecs\features\win32\console.prf D:\QT\5.4\mingw491_32\mkspecs\features\c++11.prf D:\QT\5.4\mingw491_32\mkspecs\features\qml_debug.prf D:\QT\5.4\mingw491_32\mkspecs\features\win32\rtti.prf D:\QT\5.4\mingw491_32\mkspecs\features\precompile_header.prf D:\QT\5.4\mingw491_32\mkspecs\features\qt.prf D:\QT\5.4\mingw491_32\mkspecs\features\resources.prf D:\QT\5.4\mingw491_32\mkspecs\features\moc.prf D:\QT\5.4\mingw491_32\mkspecs\features\win32\opengl.prf D:\QT\5.4\mingw491_32\mkspecs\features\uic.prf D:\QT\5.4\mingw491_32\mkspecs\features\testcase_targets.prf D:\QT\5.4\mingw491_32\mkspecs\features\exceptions.prf D:\QT\5.4\mingw491_32\mkspecs\features\yacc.prf D:\QT\5.4\mingw491_32\mkspecs\features\lex.prf pathtracer.pro glsl.qrc sfx.qrc D:/QT/5.4/mingw491_32/lib/Qt5Widgetsd.prl D:/QT/5.4/mingw491_32/lib/Qt5Multimediad.prl D:/QT/5.4/mingw491_32/lib/Qt5Guid.prl D:/QT/5.4/mingw491_32/lib/Qt5Networkd.prl D:/QT/5.4/mingw491_32/lib/Qt5Cored.prl  NO_PCH_SOURCES RESOURCES HEADERS SOURCES OBJECTIVE_SOURCES FORMS YACCSOURCES YACCSOURCES LEXSOURCES 
 
 clean: compiler_clean 
-	-$(DEL_FILE) debug\main.o debug\mainwindow.o debug\mygl.o debug\camera.o debug\scene.o debug\drawable.o debug\glwidget277.o debug\shaderprogram.o debug\intersection.o debug\ray.o debug\transform.o debug\tiny_obj_loader.o debug\film.o debug\cameracontrolshelp.o debug\jsonreader.o debug\mattematerial.o debug\bsdf.o debug\directlightingintegrator.o debug\sphere.o debug\glshapecreation.o debug\integrator.o debug\squareplane.o debug\sampler.o debug\shape.o debug\cube.o debug\disc.o debug\mesh.o debug\warpfunctions.o debug\lambertbrdf.o debug\primitive.o debug\light.o debug\diffusearealight.o debug\naiveintegrator.o debug\mirrormaterial.o debug\specularbrdf.o debug\fresnel.o debug\glassmaterial.o debug\transmissivematerial.o debug\specularbtdf.o debug\fulllightingintegrator.o debug\microfacet.o debug\microfacetbrdf.o debug\plasticmaterial.o debug\bounds.o debug\bvh.o debug\pointlight.o debug\spotlight.o debug\directionallight.o debug\realisticcamera.o debug\photon.o debug\photonmappingintegrator.o debug\qrc_glsl.o debug\qrc_sfx.o debug\moc_mainwindow.o debug\moc_mygl.o debug\moc_glwidget277.o debug\moc_cameracontrolshelp.o
+	-$(DEL_FILE) debug\main.o debug\mainwindow.o debug\mygl.o debug\camera.o debug\scene.o debug\drawable.o debug\glwidget277.o debug\shaderprogram.o debug\intersection.o debug\ray.o debug\transform.o debug\tiny_obj_loader.o debug\film.o debug\cameracontrolshelp.o debug\jsonreader.o debug\mattematerial.o debug\bsdf.o debug\directlightingintegrator.o debug\sphere.o debug\glshapecreation.o debug\integrator.o debug\squareplane.o debug\sampler.o debug\shape.o debug\cube.o debug\disc.o debug\mesh.o debug\warpfunctions.o debug\lambertbrdf.o debug\primitive.o debug\light.o debug\diffusearealight.o debug\naiveintegrator.o debug\mirrormaterial.o debug\specularbrdf.o debug\fresnel.o debug\glassmaterial.o debug\transmissivematerial.o debug\specularbtdf.o debug\fulllightingintegrator.o debug\microfacet.o debug\microfacetbrdf.o debug\plasticmaterial.o debug\bounds.o debug\bvh.o debug\pointlight.o debug\spotlight.o debug\directionallight.o debug\realisticcamera.o debug\photon.o debug\photonmappingintegrator.o debug\causticphoton.o debug\globalilluminationphoton.o debug\kdtree.o debug\qrc_glsl.o debug\qrc_sfx.o debug\moc_mainwindow.o debug\moc_mygl.o debug\moc_glwidget277.o debug\moc_cameracontrolshelp.o
 
 distclean: clean 
 	-$(DEL_FILE) $(DESTDIR_TARGET)
@@ -688,10 +700,10 @@ debug/moc_mygl.cpp: D:/QT/5.4/mingw491_32/include/QtGui/QOpenGLVertexArrayObject
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		src/scene/bvh.h \
 		src/scene/realisticcamera.h \
-		src/warpfunctions.h \
-		src/samplers/sampler.h \
 		src/scene/jsonreader.h \
 		D:/QT/5.4/mingw491_32/include/QtCore/QJsonObject \
 		D:/QT/5.4/mingw491_32/include/QtCore/qjsonobject.h \
@@ -704,6 +716,9 @@ debug/moc_mygl.cpp: D:/QT/5.4/mingw491_32/include/QtGui/QOpenGLVertexArrayObject
 		src/integrators/integrator.h \
 		D:/QT/5.4/mingw491_32/include/QtCore/QRunnable \
 		D:/QT/5.4/mingw491_32/include/QtCore/qrunnable.h \
+		src/scene/photon.h \
+		src/scene/causticphoton.h \
+		src/scene/globalilluminationphoton.h \
 		D:/QT/5.4/mingw491_32/include/QtCore/QTime \
 		D:/QT/5.4/mingw491_32/include/QtCore/qdatetime.h \
 		D:/QT/5.4/mingw491_32/include/QtMultimedia/QSound \
@@ -1194,10 +1209,10 @@ ui_mainwindow.h: forms/mainwindow.ui \
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		src/scene/bvh.h \
 		src/scene/realisticcamera.h \
-		src/warpfunctions.h \
-		src/samplers/sampler.h \
 		src/scene/jsonreader.h \
 		D:/QT/5.4/mingw491_32/include/QtCore/QJsonObject \
 		D:/QT/5.4/mingw491_32/include/QtCore/qjsonobject.h \
@@ -1210,6 +1225,9 @@ ui_mainwindow.h: forms/mainwindow.ui \
 		src/integrators/integrator.h \
 		D:/QT/5.4/mingw491_32/include/QtCore/QRunnable \
 		D:/QT/5.4/mingw491_32/include/QtCore/qrunnable.h \
+		src/scene/photon.h \
+		src/scene/causticphoton.h \
+		src/scene/globalilluminationphoton.h \
 		D:/QT/5.4/mingw491_32/include/QtCore/QTime \
 		D:/QT/5.4/mingw491_32/include/QtCore/qdatetime.h \
 		D:/QT/5.4/mingw491_32/include/QtMultimedia/QSound \
@@ -1657,10 +1675,10 @@ debug/mainwindow.o: src/mainwindow.cpp src/mainwindow.h \
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		src/scene/bvh.h \
 		src/scene/realisticcamera.h \
-		src/warpfunctions.h \
-		src/samplers/sampler.h \
 		src/scene/jsonreader.h \
 		D:/QT/5.4/mingw491_32/include/QtCore/QJsonObject \
 		D:/QT/5.4/mingw491_32/include/QtCore/qjsonobject.h \
@@ -1673,6 +1691,9 @@ debug/mainwindow.o: src/mainwindow.cpp src/mainwindow.h \
 		src/integrators/integrator.h \
 		D:/QT/5.4/mingw491_32/include/QtCore/QRunnable \
 		D:/QT/5.4/mingw491_32/include/QtCore/qrunnable.h \
+		src/scene/photon.h \
+		src/scene/causticphoton.h \
+		src/scene/globalilluminationphoton.h \
 		D:/QT/5.4/mingw491_32/include/QtCore/QTime \
 		D:/QT/5.4/mingw491_32/include/QtCore/qdatetime.h \
 		D:/QT/5.4/mingw491_32/include/QtMultimedia/QSound \
@@ -1928,10 +1949,10 @@ debug/mygl.o: src/mygl.cpp src/mygl.h \
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		src/scene/bvh.h \
 		src/scene/realisticcamera.h \
-		src/warpfunctions.h \
-		src/samplers/sampler.h \
 		src/scene/jsonreader.h \
 		D:/QT/5.4/mingw491_32/include/QtCore/QJsonObject \
 		D:/QT/5.4/mingw491_32/include/QtCore/qjsonobject.h \
@@ -1944,6 +1965,9 @@ debug/mygl.o: src/mygl.cpp src/mygl.h \
 		src/integrators/integrator.h \
 		D:/QT/5.4/mingw491_32/include/QtCore/QRunnable \
 		D:/QT/5.4/mingw491_32/include/QtCore/qrunnable.h \
+		src/scene/photon.h \
+		src/scene/causticphoton.h \
+		src/scene/globalilluminationphoton.h \
 		D:/QT/5.4/mingw491_32/include/QtCore/QTime \
 		D:/QT/5.4/mingw491_32/include/QtCore/qdatetime.h \
 		D:/QT/5.4/mingw491_32/include/QtMultimedia/QSound \
@@ -1973,7 +1997,8 @@ debug/mygl.o: src/mygl.cpp src/mygl.h \
 		src/integrators/naiveintegrator.h \
 		src/integrators/fulllightingintegrator.h \
 		src/scene/lights/diffusearealight.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/QDateTime
+		D:/QT/5.4/mingw491_32/include/QtCore/QDateTime \
+		src/integrators/photonmappingintegrator.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\mygl.o src\mygl.cpp
 
 debug/camera.o: src/scene/camera.cpp src/scene/camera.h \
@@ -2448,10 +2473,10 @@ debug/scene.o: src/scene/scene.cpp src/scene/scene.h \
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		src/scene/bvh.h \
 		src/scene/realisticcamera.h \
-		src/warpfunctions.h \
-		src/samplers/sampler.h \
 		src/scene/geometry/cube.h \
 		src/scene/geometry/sphere.h \
 		src/scene/geometry/mesh.h \
@@ -3387,6 +3412,8 @@ debug/intersection.o: src/raytracing/intersection.cpp src/raytracing/intersectio
 		include/pcg32.h \
 		src/scene/bounds.h \
 		src/scene/lights/light.h \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
@@ -4315,10 +4342,10 @@ debug/jsonreader.o: src/scene/jsonreader.cpp src/scene/jsonreader.h \
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		src/scene/bvh.h \
 		src/scene/realisticcamera.h \
-		src/warpfunctions.h \
-		src/samplers/sampler.h \
 		src/scene/geometry/cube.h \
 		src/scene/geometry/sphere.h \
 		src/scene/geometry/mesh.h \
@@ -4571,6 +4598,8 @@ debug/mattematerial.o: src/scene/materials/mattematerial.cpp src/scene/materials
 		include/pcg32.h \
 		src/scene/bounds.h \
 		src/scene/lights/light.h \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		D:/QT/5.4/mingw491_32/include/QtCore/QList \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
@@ -4811,11 +4840,12 @@ debug/bsdf.o: src/scene/materials/bsdf.cpp src/scene/materials/bsdf.h \
 		include/pcg32.h \
 		src/scene/bounds.h \
 		src/scene/lights/light.h \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
-		D:/QT/5.4/mingw491_32/include/QtCore/QList \
-		src/warpfunctions.h
+		D:/QT/5.4/mingw491_32/include/QtCore/QList
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\bsdf.o src\scene\materials\bsdf.cpp
 
 debug/directlightingintegrator.o: src/integrators/directlightingintegrator.cpp src/integrators/directlightingintegrator.h \
@@ -5063,10 +5093,13 @@ debug/directlightingintegrator.o: src/integrators/directlightingintegrator.cpp s
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		src/scene/bvh.h \
 		src/scene/realisticcamera.h \
-		src/warpfunctions.h \
-		src/samplers/sampler.h
+		src/scene/photon.h \
+		src/scene/causticphoton.h \
+		src/scene/globalilluminationphoton.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\directlightingintegrator.o src\integrators\directlightingintegrator.cpp
 
 debug/sphere.o: src/scene/geometry/sphere.cpp src/scene/geometry/sphere.h \
@@ -5245,6 +5278,9 @@ debug/sphere.o: src/scene/geometry/sphere.cpp src/scene/geometry/sphere.h \
 		src/scene/geometry/primitive.h \
 		src/scene/lights/light.h \
 		src/scene/transform.h \
+		src/samplers/sampler.h \
+		include/pcg32.h \
+		src/warpfunctions.h \
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/qimage.h \
@@ -5306,9 +5342,7 @@ debug/sphere.o: src/scene/geometry/sphere.cpp src/scene/geometry/sphere.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QOpenGLShaderProgram \
 		D:/QT/5.4/mingw491_32/include/QtGui/qopenglshaderprogram.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QOpenGLBuffer \
-		D:/QT/5.4/mingw491_32/include/QtGui/qopenglbuffer.h \
-		include/pcg32.h \
-		src/warpfunctions.h
+		D:/QT/5.4/mingw491_32/include/QtGui/qopenglbuffer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\sphere.o src\scene\geometry\sphere.cpp
 
 debug/glshapecreation.o: src/scene/geometry/glshapecreation.cpp src/scene/geometry/sphere.h \
@@ -5487,6 +5521,9 @@ debug/glshapecreation.o: src/scene/geometry/glshapecreation.cpp src/scene/geomet
 		src/scene/geometry/primitive.h \
 		src/scene/lights/light.h \
 		src/scene/transform.h \
+		src/samplers/sampler.h \
+		include/pcg32.h \
+		src/warpfunctions.h \
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/qimage.h \
@@ -5549,7 +5586,6 @@ debug/glshapecreation.o: src/scene/geometry/glshapecreation.cpp src/scene/geomet
 		D:/QT/5.4/mingw491_32/include/QtGui/qopenglshaderprogram.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QOpenGLBuffer \
 		D:/QT/5.4/mingw491_32/include/QtGui/qopenglbuffer.h \
-		include/pcg32.h \
 		src/scene/geometry/squareplane.h \
 		src/scene/geometry/cube.h \
 		src/scene/geometry/disc.h \
@@ -5800,10 +5836,13 @@ debug/integrator.o: src/integrators/integrator.cpp src/integrators/integrator.h 
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		src/scene/bvh.h \
 		src/scene/realisticcamera.h \
-		src/warpfunctions.h \
-		src/samplers/sampler.h
+		src/scene/photon.h \
+		src/scene/causticphoton.h \
+		src/scene/globalilluminationphoton.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\integrator.o src\integrators\integrator.cpp
 
 debug/squareplane.o: src/scene/geometry/squareplane.cpp src/scene/geometry/squareplane.h \
@@ -5982,6 +6021,9 @@ debug/squareplane.o: src/scene/geometry/squareplane.cpp src/scene/geometry/squar
 		src/scene/geometry/primitive.h \
 		src/scene/lights/light.h \
 		src/scene/transform.h \
+		src/samplers/sampler.h \
+		include/pcg32.h \
+		src/warpfunctions.h \
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/qimage.h \
@@ -6043,8 +6085,7 @@ debug/squareplane.o: src/scene/geometry/squareplane.cpp src/scene/geometry/squar
 		D:/QT/5.4/mingw491_32/include/QtGui/QOpenGLShaderProgram \
 		D:/QT/5.4/mingw491_32/include/QtGui/qopenglshaderprogram.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QOpenGLBuffer \
-		D:/QT/5.4/mingw491_32/include/QtGui/qopenglbuffer.h \
-		include/pcg32.h
+		D:/QT/5.4/mingw491_32/include/QtGui/qopenglbuffer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\squareplane.o src\scene\geometry\squareplane.cpp
 
 debug/sampler.o: src/samplers/sampler.cpp src/samplers/sampler.h \
@@ -6394,6 +6435,9 @@ debug/shape.o: src/scene/geometry/shape.cpp src/scene/geometry/shape.h \
 		src/scene/geometry/primitive.h \
 		src/scene/lights/light.h \
 		src/scene/transform.h \
+		src/samplers/sampler.h \
+		include/pcg32.h \
+		src/warpfunctions.h \
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/qimage.h \
@@ -6455,8 +6499,7 @@ debug/shape.o: src/scene/geometry/shape.cpp src/scene/geometry/shape.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QOpenGLShaderProgram \
 		D:/QT/5.4/mingw491_32/include/QtGui/qopenglshaderprogram.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QOpenGLBuffer \
-		D:/QT/5.4/mingw491_32/include/QtGui/qopenglbuffer.h \
-		include/pcg32.h
+		D:/QT/5.4/mingw491_32/include/QtGui/qopenglbuffer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\shape.o src\scene\geometry\shape.cpp
 
 debug/cube.o: src/scene/geometry/cube.cpp src/scene/geometry/cube.h \
@@ -6635,6 +6678,9 @@ debug/cube.o: src/scene/geometry/cube.cpp src/scene/geometry/cube.h \
 		src/scene/geometry/primitive.h \
 		src/scene/lights/light.h \
 		src/scene/transform.h \
+		src/samplers/sampler.h \
+		include/pcg32.h \
+		src/warpfunctions.h \
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/qimage.h \
@@ -6696,8 +6742,7 @@ debug/cube.o: src/scene/geometry/cube.cpp src/scene/geometry/cube.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QOpenGLShaderProgram \
 		D:/QT/5.4/mingw491_32/include/QtGui/qopenglshaderprogram.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QOpenGLBuffer \
-		D:/QT/5.4/mingw491_32/include/QtGui/qopenglbuffer.h \
-		include/pcg32.h
+		D:/QT/5.4/mingw491_32/include/QtGui/qopenglbuffer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\cube.o src\scene\geometry\cube.cpp
 
 debug/disc.o: src/scene/geometry/disc.cpp src/scene/geometry/disc.h \
@@ -6876,6 +6921,9 @@ debug/disc.o: src/scene/geometry/disc.cpp src/scene/geometry/disc.h \
 		src/scene/geometry/primitive.h \
 		src/scene/lights/light.h \
 		src/scene/transform.h \
+		src/samplers/sampler.h \
+		include/pcg32.h \
+		src/warpfunctions.h \
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/qimage.h \
@@ -6937,9 +6985,7 @@ debug/disc.o: src/scene/geometry/disc.cpp src/scene/geometry/disc.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QOpenGLShaderProgram \
 		D:/QT/5.4/mingw491_32/include/QtGui/qopenglshaderprogram.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QOpenGLBuffer \
-		D:/QT/5.4/mingw491_32/include/QtGui/qopenglbuffer.h \
-		include/pcg32.h \
-		src/warpfunctions.h
+		D:/QT/5.4/mingw491_32/include/QtGui/qopenglbuffer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\disc.o src\scene\geometry\disc.cpp
 
 debug/mesh.o: src/scene/geometry/mesh.cpp src/scene/geometry/mesh.h \
@@ -7118,6 +7164,9 @@ debug/mesh.o: src/scene/geometry/mesh.cpp src/scene/geometry/mesh.h \
 		src/scene/geometry/primitive.h \
 		src/scene/lights/light.h \
 		src/scene/transform.h \
+		src/samplers/sampler.h \
+		include/pcg32.h \
+		src/warpfunctions.h \
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/qimage.h \
@@ -7180,7 +7229,6 @@ debug/mesh.o: src/scene/geometry/mesh.cpp src/scene/geometry/mesh.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/qopenglshaderprogram.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QOpenGLBuffer \
 		D:/QT/5.4/mingw491_32/include/QtGui/qopenglbuffer.h \
-		include/pcg32.h \
 		src/tinyobj/tiny_obj_loader.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\mesh.o src\scene\geometry\mesh.cpp
 
@@ -7590,11 +7638,12 @@ debug/lambertbrdf.o: src/scene/materials/lambertbrdf.cpp src/scene/materials/lam
 		include/pcg32.h \
 		src/scene/bounds.h \
 		src/scene/lights/light.h \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
-		D:/QT/5.4/mingw491_32/include/QtCore/QList \
-		src/warpfunctions.h
+		D:/QT/5.4/mingw491_32/include/QtCore/QList
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\lambertbrdf.o src\scene\materials\lambertbrdf.cpp
 
 debug/primitive.o: src/scene/geometry/primitive.cpp src/scene/geometry/primitive.h \
@@ -7832,6 +7881,8 @@ debug/primitive.o: src/scene/geometry/primitive.cpp src/scene/geometry/primitive
 		include/pcg32.h \
 		src/scene/bounds.h \
 		src/scene/lights/light.h \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor
@@ -8074,7 +8125,9 @@ debug/light.o: src/scene/lights/light.cpp src/scene/lights/light.h \
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
-		D:/QT/5.4/mingw491_32/include/QtCore/QList
+		D:/QT/5.4/mingw491_32/include/QtCore/QList \
+		src/samplers/sampler.h \
+		src/warpfunctions.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\light.o src\scene\lights\light.cpp
 
 debug/diffusearealight.o: src/scene/lights/diffusearealight.cpp src/scene/lights/diffusearealight.h
@@ -8325,10 +8378,13 @@ debug/naiveintegrator.o: src/integrators/naiveintegrator.cpp src/integrators/nai
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		src/scene/bvh.h \
 		src/scene/realisticcamera.h \
-		src/warpfunctions.h \
-		src/samplers/sampler.h
+		src/scene/photon.h \
+		src/scene/causticphoton.h \
+		src/scene/globalilluminationphoton.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\naiveintegrator.o src\integrators\naiveintegrator.cpp
 
 debug/mirrormaterial.o: src/scene/materials/mirrormaterial.cpp src/scene/materials/mirrormaterial.h \
@@ -8567,6 +8623,8 @@ debug/mirrormaterial.o: src/scene/materials/mirrormaterial.cpp src/scene/materia
 		include/pcg32.h \
 		src/scene/bounds.h \
 		src/scene/lights/light.h \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		D:/QT/5.4/mingw491_32/include/QtCore/QList \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
@@ -8811,6 +8869,8 @@ debug/specularbrdf.o: src/scene/materials/specularbrdf.cpp src/scene/materials/s
 		include/pcg32.h \
 		src/scene/bounds.h \
 		src/scene/lights/light.h \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
@@ -9225,6 +9285,8 @@ debug/glassmaterial.o: src/scene/materials/glassmaterial.cpp src/scene/materials
 		include/pcg32.h \
 		src/scene/bounds.h \
 		src/scene/lights/light.h \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		D:/QT/5.4/mingw491_32/include/QtCore/QList \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
@@ -9469,6 +9531,8 @@ debug/transmissivematerial.o: src/scene/materials/transmissivematerial.cpp src/s
 		include/pcg32.h \
 		src/scene/bounds.h \
 		src/scene/lights/light.h \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		D:/QT/5.4/mingw491_32/include/QtCore/QList \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
@@ -9711,6 +9775,8 @@ debug/specularbtdf.o: src/scene/materials/specularbtdf.cpp src/scene/materials/s
 		include/pcg32.h \
 		src/scene/bounds.h \
 		src/scene/lights/light.h \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
@@ -9963,10 +10029,13 @@ debug/fulllightingintegrator.o: src/integrators/fulllightingintegrator.cpp src/i
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		src/scene/bvh.h \
 		src/scene/realisticcamera.h \
-		src/warpfunctions.h \
-		src/samplers/sampler.h
+		src/scene/photon.h \
+		src/scene/causticphoton.h \
+		src/scene/globalilluminationphoton.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\fulllightingintegrator.o src\integrators\fulllightingintegrator.cpp
 
 debug/microfacet.o: src/scene/materials/microfacet.cpp src/scene/materials/microfacet.h \
@@ -10375,6 +10444,8 @@ debug/microfacetbrdf.o: src/scene/materials/microfacetbrdf.cpp src/scene/materia
 		include/pcg32.h \
 		src/scene/bounds.h \
 		src/scene/lights/light.h \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
@@ -10619,6 +10690,8 @@ debug/plasticmaterial.o: src/scene/materials/plasticmaterial.cpp src/scene/mater
 		include/pcg32.h \
 		src/scene/bounds.h \
 		src/scene/lights/light.h \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		D:/QT/5.4/mingw491_32/include/QtCore/QList \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
@@ -11037,6 +11110,8 @@ debug/bvh.o: src/scene/bvh.cpp src/scene/bvh.h \
 		include/pcg32.h \
 		src/scene/bounds.h \
 		src/scene/lights/light.h \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor
@@ -11280,7 +11355,9 @@ debug/pointlight.o: src/scene/lights/pointlight.cpp src/scene/lights/pointlight.
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
-		D:/QT/5.4/mingw491_32/include/QtCore/QList
+		D:/QT/5.4/mingw491_32/include/QtCore/QList \
+		src/samplers/sampler.h \
+		src/warpfunctions.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\pointlight.o src\scene\lights\pointlight.cpp
 
 debug/spotlight.o: src/scene/lights/spotlight.cpp src/scene/lights/spotlight.h \
@@ -11521,7 +11598,9 @@ debug/spotlight.o: src/scene/lights/spotlight.cpp src/scene/lights/spotlight.h \
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
-		D:/QT/5.4/mingw491_32/include/QtCore/QList
+		D:/QT/5.4/mingw491_32/include/QtCore/QList \
+		src/samplers/sampler.h \
+		src/warpfunctions.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\spotlight.o src\scene\lights\spotlight.cpp
 
 debug/directionallight.o: src/scene/lights/directionallight.cpp src/scene/lights/directionallight.h \
@@ -11762,7 +11841,9 @@ debug/directionallight.o: src/scene/lights/directionallight.cpp src/scene/lights
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
-		D:/QT/5.4/mingw491_32/include/QtCore/QList
+		D:/QT/5.4/mingw491_32/include/QtCore/QList \
+		src/samplers/sampler.h \
+		src/warpfunctions.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\directionallight.o src\scene\lights\directionallight.cpp
 
 debug/realisticcamera.o: src/scene/realisticcamera.cpp src/scene/realisticcamera.h \
@@ -11999,175 +12080,7 @@ debug/realisticcamera.o: src/scene/realisticcamera.cpp src/scene/realisticcamera
 		src/samplers/sampler.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\realisticcamera.o src\scene\realisticcamera.cpp
 
-debug/photon.o: src/scene/photon.cpp src/scene/photon.h \
-		src/globals.h \
-		src/la.h \
-		include/glm/glm.hpp \
-		include/glm/detail/_fixes.hpp \
-		include/glm/fwd.hpp \
-		include/glm/detail/type_int.hpp \
-		include/glm/detail/setup.hpp \
-		include/glm/detail/type_float.hpp \
-		include/glm/detail/type_vec.hpp \
-		include/glm/detail/precision.hpp \
-		include/glm/detail/type_mat.hpp \
-		include/glm/vec2.hpp \
-		include/glm/detail/type_vec2.hpp \
-		include/glm/detail/_swizzle.hpp \
-		include/glm/detail/_swizzle_func.hpp \
-		include/glm/detail/type_vec2.inl \
-		include/glm/vec3.hpp \
-		include/glm/detail/type_vec3.hpp \
-		include/glm/detail/type_vec3.inl \
-		include/glm/vec4.hpp \
-		include/glm/detail/type_vec4.hpp \
-		include/glm/detail/type_vec4.inl \
-		include/glm/mat2x2.hpp \
-		include/glm/detail/type_mat2x2.hpp \
-		include/glm/detail/type_mat2x2.inl \
-		include/glm/mat2x3.hpp \
-		include/glm/detail/type_mat2x3.hpp \
-		include/glm/detail/type_mat2x3.inl \
-		include/glm/mat2x4.hpp \
-		include/glm/detail/type_mat2x4.hpp \
-		include/glm/detail/type_mat2x4.inl \
-		include/glm/mat3x2.hpp \
-		include/glm/detail/type_mat3x2.hpp \
-		include/glm/detail/type_mat3x2.inl \
-		include/glm/mat3x3.hpp \
-		include/glm/detail/type_mat3x3.hpp \
-		include/glm/detail/type_mat3x3.inl \
-		include/glm/mat3x4.hpp \
-		include/glm/detail/type_mat3x4.hpp \
-		include/glm/detail/type_mat3x4.inl \
-		include/glm/mat4x2.hpp \
-		include/glm/detail/type_mat4x2.hpp \
-		include/glm/detail/type_mat4x2.inl \
-		include/glm/mat4x3.hpp \
-		include/glm/detail/type_mat4x3.hpp \
-		include/glm/detail/type_mat4x3.inl \
-		include/glm/mat4x4.hpp \
-		include/glm/detail/type_mat4x4.hpp \
-		include/glm/detail/type_mat4x4.inl \
-		include/glm/trigonometric.hpp \
-		include/glm/detail/func_trigonometric.hpp \
-		include/glm/detail/func_trigonometric.inl \
-		include/glm/detail/_vectorize.hpp \
-		include/glm/detail/type_vec1.hpp \
-		include/glm/detail/type_vec1.inl \
-		include/glm/exponential.hpp \
-		include/glm/detail/func_exponential.hpp \
-		include/glm/detail/func_exponential.inl \
-		include/glm/detail/func_vector_relational.hpp \
-		include/glm/detail/func_vector_relational.inl \
-		include/glm/common.hpp \
-		include/glm/detail/func_common.hpp \
-		include/glm/detail/func_common.inl \
-		include/glm/packing.hpp \
-		include/glm/detail/func_packing.hpp \
-		include/glm/detail/func_packing.inl \
-		include/glm/detail/type_half.hpp \
-		include/glm/detail/type_half.inl \
-		include/glm/geometric.hpp \
-		include/glm/detail/func_geometric.hpp \
-		include/glm/detail/func_geometric.inl \
-		include/glm/matrix.hpp \
-		include/glm/detail/func_matrix.hpp \
-		include/glm/detail/func_matrix.inl \
-		include/glm/vector_relational.hpp \
-		include/glm/integer.hpp \
-		include/glm/detail/func_integer.hpp \
-		include/glm/detail/func_integer.inl \
-		include/glm/gtc/matrix_transform.hpp \
-		include/glm/gtc/constants.hpp \
-		include/glm/gtc/constants.inl \
-		include/glm/gtc/matrix_transform.inl \
-		include/glm/gtx/string_cast.hpp \
-		include/glm/gtx/integer.hpp \
-		include/glm/gtx/integer.inl \
-		include/glm/gtx/quaternion.hpp \
-		include/glm/gtc/quaternion.hpp \
-		include/glm/gtx/quaternion.inl \
-		include/glm/gtx/norm.hpp \
-		include/glm/gtx/norm.inl \
-		include/glm/gtx/string_cast.inl \
-		include/glm/gtc/type_ptr.hpp \
-		include/glm/gtc/type_ptr.inl \
-		D:/QT/5.4/mingw491_32/include/QtGui/QMatrix4x4 \
-		D:/QT/5.4/mingw491_32/include/QtGui/qmatrix4x4.h \
-		D:/QT/5.4/mingw491_32/include/QtGui/qvector3d.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qpoint.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qnamespace.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qglobal.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qconfig.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qfeatures.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qsystemdetection.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qprocessordetection.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qcompilerdetection.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qtypeinfo.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qtypetraits.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qsysinfo.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qlogging.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qflags.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qatomic.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qbasicatomic.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qatomic_bootstrap.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qgenericatomic.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qatomic_msvc.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qatomic_armv7.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qatomic_armv6.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qatomic_armv5.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qatomic_ia64.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qatomic_mips.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qatomic_x86.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qatomic_cxx11.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qatomic_gcc.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qatomic_unix.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qglobalstatic.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qmutex.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qnumeric.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qmetatype.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qbytearray.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qrefcount.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qarraydata.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qstring.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qchar.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qstringbuilder.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qvarlengtharray.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qcontainerfwd.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qalgorithms.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qisenum.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qobjectdefs.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qobjectdefs_impl.h \
-		D:/QT/5.4/mingw491_32/include/QtGui/qvector4d.h \
-		D:/QT/5.4/mingw491_32/include/QtGui/qquaternion.h \
-		D:/QT/5.4/mingw491_32/include/QtGui/qgenericmatrix.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qdebug.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qhash.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qiterator.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qlist.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qbytearraylist.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qpair.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qmap.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qtextstream.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qiodevice.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qobject.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qcoreevent.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qscopedpointer.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qobject_impl.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qlocale.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qvariant.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qstringlist.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qdatastream.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qregexp.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qstringmatcher.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qshareddata.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qvector.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qset.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qcontiguouscache.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qrect.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qmargins.h \
-		D:/QT/5.4/mingw491_32/include/QtCore/qsize.h
+debug/photon.o: src/scene/photon.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\photon.o src\scene\photon.cpp
 
 debug/photonmappingintegrator.o: src/integrators/photonmappingintegrator.cpp src/integrators/photonmappingintegrator.h \
@@ -12415,12 +12328,23 @@ debug/photonmappingintegrator.o: src/integrators/photonmappingintegrator.cpp src
 		src/scene/materials/material.h \
 		D:/QT/5.4/mingw491_32/include/QtGui/QImage \
 		D:/QT/5.4/mingw491_32/include/QtGui/QColor \
+		src/samplers/sampler.h \
+		src/warpfunctions.h \
 		src/scene/bvh.h \
 		src/scene/realisticcamera.h \
-		src/warpfunctions.h \
-		src/samplers/sampler.h \
-		src/scene/photon.h
+		src/scene/photon.h \
+		src/scene/causticphoton.h \
+		src/scene/globalilluminationphoton.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\photonmappingintegrator.o src\integrators\photonmappingintegrator.cpp
+
+debug/causticphoton.o: src/scene/causticphoton.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\causticphoton.o src\scene\causticphoton.cpp
+
+debug/globalilluminationphoton.o: src/scene/globalilluminationphoton.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\globalilluminationphoton.o src\scene\globalilluminationphoton.cpp
+
+debug/kdtree.o: src/scene/kdtree.cpp src/scene/kdtree.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\kdtree.o src\scene\kdtree.cpp
 
 debug/qrc_glsl.o: debug/qrc_glsl.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\qrc_glsl.o debug\qrc_glsl.cpp

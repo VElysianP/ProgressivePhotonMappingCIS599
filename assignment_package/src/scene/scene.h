@@ -6,12 +6,16 @@
 #include <scene/geometry/shape.h>
 #include "bvh.h"
 #include <scene/realisticcamera.h>
-#include <scene/photon.h>
+//#include <scene/photon.h>
+#include "globals.h"
+
 
 class Primitive;
 class BVHAccel;
 class Material;
 class Light;
+
+//typedef KDTree<Photon> PhotonMap;
 
 class Scene
 {
@@ -26,7 +30,8 @@ public:
     Film film;
 
     BVHAccel* bvh;
-    QList<std::shared_ptr<Photon>> scenePhoton;
+//    std::vector<Photon> scenePhoton;
+//    PhotonMap* photonTree;
 
 
     QList<std::shared_ptr<Drawable>> drawables;

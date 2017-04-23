@@ -50,6 +50,9 @@ INPUT(
 ./debug\realisticcamera.o
 ./debug\photon.o
 ./debug\photonmappingintegrator.o
+./debug\causticphoton.o
+./debug\globalilluminationphoton.o
+./debug\kdtree.o
 ./debug\qrc_glsl.o
 ./debug\qrc_sfx.o
 ./debug\moc_mainwindow.o

@@ -1,6 +1,6 @@
 #include "naiveintegrator.h"
 
-Color3f NaiveIntegrator::Li(const Ray &ray, const Scene &scene, std::shared_ptr<Sampler> sampler, int depth, Color3f throughputColor) const
+Color3f NaiveIntegrator::Li(const Ray &ray, const Scene &scene, std::shared_ptr<Sampler> sampler, int depth, Color3f throughputColor, KdTree tree) const
 {
     //TODO
     //omega 0 should be treated as the inverse of the ray
@@ -24,7 +24,7 @@ Color3f NaiveIntegrator::Li(const Ray &ray, const Scene &scene, std::shared_ptr<
                 float currentPdf;
                 Color3f fColor = isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&currentPdf);
                 Ray newRay = isec.SpawnRay(wiW);
-                liColor = Li(newRay, scene,sampler, --depth,Color3f(1.0f));
+                liColor = Li(newRay, scene,sampler, --depth,Color3f(1.0f),tree);
                 if(currentPdf==0)
                 {
                     totalColor = leColor/* + fColor*liColor*AbsDot(wiW,isec.normalGeometric)*/;

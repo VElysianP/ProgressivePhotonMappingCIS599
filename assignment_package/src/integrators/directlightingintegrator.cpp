@@ -1,6 +1,6 @@
 #include "directlightingintegrator.h"
 
-Color3f DirectLightingIntegrator::Li(const Ray &ray, const Scene &scene, std::shared_ptr<Sampler> sampler, int depth, Color3f testColor) const
+Color3f DirectLightingIntegrator::Li(const Ray &ray, const Scene &scene, std::shared_ptr<Sampler> sampler, int depth, Color3f testColor, KdTree tree) const
 {
     //TODO
     Vector3f wo = -ray.direction;

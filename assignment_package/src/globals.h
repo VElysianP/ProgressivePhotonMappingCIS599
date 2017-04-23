@@ -15,6 +15,7 @@
 #include <string.h>
 
 
+
 // Global constants. You may not end up using all of these.
 static const float ShadowEpsilon = 0.0001f;
 static const float RayEpsilon = 0.000005f;
@@ -28,7 +29,11 @@ static const float PiOver4 = 0.78539816339744830961;
 static const float Sqrt2 = 1.41421356237309504880;
 static const float OneMinusEpsilon = 0.99999994;
 
-static const int totalPhoton = 10000;//the total number of photons inside the scene
+//***************************************************used in Photon Mapping****************************************
+static const int totalPhoton = 1000;//the total number of photons inside the scene
+static const int max_photon_search = 5;
+static const float search_radius = 0.1;
+static const int Axis_Dimension = 3;
 
 // We're going to create some type aliases to
 // give our code a little more context so it's
@@ -50,6 +55,7 @@ typedef glm::vec2 Vector2f;
 typedef glm::ivec2 Vector2i;
 typedef glm::mat4 Matrix4x4;
 typedef glm::mat3 Matrix3x3;
+
 
 // A cheap way of storing the minimum and maximum bounds of a 2D box
 struct Bounds2i : public glm::ivec4
@@ -162,3 +168,4 @@ inline void CoordinateSystem(const Vector3f& v1, Vector3f* v2, Vector3f* v3)
             *v2 = Vector3f(0, v1.z, -v1.y) / std::sqrt(v1.y * v1.y + v1.z * v1.z);
         *v3 = glm::cross(v1, *v2);
 }
+

@@ -9,13 +9,14 @@
 
 
 
-Scene::Scene() : bvh(nullptr)
+Scene::Scene() : bvh(nullptr)/*,kdTree(nullptr)*/
 {}
 
 Scene::~Scene()
 {
     delete bvh;
 }
+
 
 void Scene::SetCamera(const Camera &c)
 {
@@ -133,7 +134,7 @@ void Scene::Clear()
     drawables.clear();
     camera = Camera();
     realCamera = RealisticCamera();
-    scenePhoton.clear();
+//    scenePhoton.clear();
     film = Film();
 }
 

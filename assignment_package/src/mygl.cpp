@@ -424,17 +424,17 @@ void MyGL::RenderScene()
                 rt = new PhotonMappingIntegrator(tileBounds, &scene, sampler->Clone(seed), recursionLimit);
                 break;
             }
-#define MULTITHREAD // Comment this line out to be able to debug with breakpoints.
+//#define MULTITHREAD // Comment this line out to be able to debug with breakpoints.
 #ifdef MULTITHREAD
             QThreadPool::globalInstance()->start(rt);
 #else
             // Use this commented-out code to only render a tile with your desired pixel
-//                        Point2i debugPixel(123,48);
-//                        if(x0 < debugPixel.x && x1 >= debugPixel.x && y0 < debugPixel.y && y1 >= debugPixel.y)
-//                        {
-//                            rt->Render();
-//                        }
-            rt->Render();
+                        Point2i debugPixel(504,572);
+                        if(x0 < debugPixel.x && x1 >= debugPixel.x && y0 < debugPixel.y && y1 >= debugPixel.y)
+                        {
+                            rt->Render();
+                        }
+//            rt->Render();
             delete rt;
 #endif //MULTITHREAD
         }

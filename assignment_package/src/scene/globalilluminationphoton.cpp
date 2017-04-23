@@ -1,1 +1,1 @@
-#include "globalilluminationphoton.h"
+//#include "globalilluminationphoton.h"

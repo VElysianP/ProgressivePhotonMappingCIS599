@@ -32,3 +32,8 @@ Color3f DirectionalLight::L(const Intersection &isect, const Vector3f &w) const
 
     return emittedLight*Pi*worldRadius*worldRadius;
 }
+Ray DirectionalLight::EmitSampleLight(std::shared_ptr<Sampler> sampler) const
+{
+    //this is not correct at present
+    return Ray(pLight, wLight);
+}
