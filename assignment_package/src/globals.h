@@ -30,7 +30,7 @@ static const float Sqrt2 = 1.41421356237309504880;
 static const float OneMinusEpsilon = 0.99999994;
 
 //***************************************************used in Photon Mapping****************************************
-static const int totalPhoton = 100000;//the total number of photons inside the scene
+static const int totalPhoton = 300000;//the total number of photons inside the scene
 static const int max_photon_search = 5;
 static const float search_radius = 0.1;
 static const int Axis_Dimension = 3;

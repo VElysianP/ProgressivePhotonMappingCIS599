@@ -188,7 +188,7 @@
           "name" : "miku",
           "material" : "MikuMaterial",
           "transform" : {
-            "translate" : [0, -3, 2],
+            "translate" : [0, -2.55, 2],
             "rotate" : [0,180,0],
             "scale" : [2, 2, 2]
           }
@@ -217,6 +217,20 @@
           "intensity" : 130,
           "transform" : {
             "translate" : [0,3,-40],
+            "rotate" : [0,0,0],
+            "scale" : [4, 4, 1]
+          },
+          "isDelta" : false,
+          "twoSided" : true
+        },
+		{
+          "shape" : "SquarePlane",
+          "name" : "Light Source",
+          "type" : "DiffuseAreaLight",
+          "lightColor" : [1,1,1],
+          "intensity" : 20,
+          "transform" : {
+            "translate" : [0,-6,0],
             "rotate" : [0,0,0],
             "scale" : [4, 4, 1]
           },
