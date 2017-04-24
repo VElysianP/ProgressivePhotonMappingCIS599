@@ -188,7 +188,7 @@
           "name" : "miku",
           "material" : "MikuMaterial",
           "transform" : {
-            "translate" : [0, -2.55, 2],
+            "translate" : [0, -2.5, 2],
             "rotate" : [0,180,0],
             "scale" : [2, 2, 2]
           }

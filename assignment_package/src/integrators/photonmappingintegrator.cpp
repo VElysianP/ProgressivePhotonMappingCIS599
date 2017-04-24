@@ -42,6 +42,7 @@ Color3f PhotonMappingIntegrator::Li(const Ray& ray, const Scene& scene, std::sha
             {
                 float currentPdf;
                 Color3f testColor = isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&currentPdf,BSDF_ALL,&typebxdf);
+                Color3f leColor = isec.Le(woW);
                 specularBounce = false;
                 if((typebxdf & BSDF_SPECULAR)!=0)
                 {
