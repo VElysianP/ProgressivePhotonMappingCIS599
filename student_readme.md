@@ -11,3 +11,9 @@ implemented.
 
 # **Implementation** #
 
+**PT_FinalSceneDiffuse.json**
+
+10000 photons with 2 samples per pixel
+
+![](http://i.imgur.com/gM3kdcv.jpg)
+

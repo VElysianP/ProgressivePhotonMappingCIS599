@@ -73,3 +73,5 @@ the committed version of your code you wish us to grade. If you click on the
 __Commits__ tab of your repository on Github, you will be brought to a list of
 commits you've made. Simply click on the one you wish for us to grade, then copy
 and paste the URL of the page into the Canvas submission form.
+
+#PLEASE REFER TO STUDENT_README.MD#
