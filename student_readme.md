@@ -13,16 +13,19 @@ implemented.
 
 # Please make sure that the UI show up "Photon Mapping" in drop down menu. If it does not show up, please change the ui_mainwindow.h. #
 
+Photon Mapping 
+
 **PT_FinalSceneDiffuse.json**
 
-10000 photons with 2 samples per pixel
 
-![](http://i.imgur.com/gM3kdcv.jpg)
+100000 photons in the scene, 20 samples, 5 photon trace depth
 
-100000 photons with 10 samples per pixel
-(without multi threading)
+![](http://i.imgur.com/bOeKfvN.jpg)
 
-![](http://i.imgur.com/JnKi32Q.jpg)
+rendertime: 11.26 hour
 
-render time 10.6 hours
+**Structure:**
 
+![](http://i.imgur.com/cmXRlOo.jpg)
+
+three lights: top, bottom, and behind the camera
