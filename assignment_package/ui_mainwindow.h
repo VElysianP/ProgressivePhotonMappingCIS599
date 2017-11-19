@@ -179,7 +179,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 655, 26));
+        menuBar->setGeometry(QRect(0, 0, 655, 21));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
         menuHelp = new QMenu(menuBar);
@@ -227,7 +227,8 @@ public:
          << QApplication::translate("MainWindow", "Direct Lighting", 0)
          << QApplication::translate("MainWindow", "Indirect Lighting", 0)
          << QApplication::translate("MainWindow", "Full Lighting", 0)
-		 << QApplication::translate("MainWindow", "Photon Mapping", 0)
+         << QApplication::translate("MainWindow", "Photon Mapping", 0)
+         << QApplication::translate("MainWindow", "Progressive Photon Mapping", 0)
         );
         checkBox_BVH->setText(QApplication::translate("MainWindow", "Make BVH", 0));
         label_4->setText(QApplication::translate("MainWindow", "Max primitives in node:", 0));

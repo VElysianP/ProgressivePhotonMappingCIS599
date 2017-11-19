@@ -16,6 +16,15 @@
 
 
 
+enum SplitAxis
+{
+    UNKNOWN_AXIS = -1,
+    X_AXIS = 0,
+    Y_AXIS = 1,
+    Z_AXIS = 2
+};
+
+
 // Global constants. You may not end up using all of these.
 static const float ShadowEpsilon = 0.0001f;
 static const float RayEpsilon = 0.000005f;

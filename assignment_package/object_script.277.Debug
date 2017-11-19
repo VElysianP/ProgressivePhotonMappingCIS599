@@ -53,6 +53,8 @@ INPUT(
 ./debug\causticphoton.o
 ./debug\globalilluminationphoton.o
 ./debug\kdtree.o
+./debug\progressivephotonmapping.o
+./debug\progressivekdtree.o
 ./debug\qrc_glsl.o
 ./debug\qrc_sfx.o
 ./debug\moc_mainwindow.o

@@ -8,29 +8,10 @@
 #include <scene/lights/light.h>
 #include <scene/photon.h>
 #include <warpfunctions.h>
-//#include <scene/causticphoton.h>
-//#include <scene/globalilluminationphoton.h>
 #include <scene/kdtree.h>
+#include <scene/progressivekdtree.h>
+#include <scene/progressivephoton.h>
 
-
-//enum PhotonType
-//{
-//    UNKNOWN = -1,
-//    DIRECT = 0,
-//    CAUSTIC = 1,
-//    GLOBALINDIRECT = 2
-//};
-
-//struct Photon{
-//    Point3f position;
-//    Color3f power;
-
-//    Vector3f direction;
-//    PhotonType photonType;
-
-//    Photon(const Point3f position, const Color3f power, const Vector3f direction, const PhotonType type):
-//        position(position), power(power), direction(direction),photonType(type){}
-//};
 
 // An interface for rendering scenes by evaluating the Light Transport Equation
 class Integrator : public QRunnable
@@ -64,16 +45,33 @@ public:
     // Clamp the upper end of our bounds to not go past the edge of the film.
     void ClampBounds();
 
+
+    //specially for Progressive Photon Mapping
+    void ProgressiveRayTracing(const Scene& scene,const Point2i pixel, std::shared_ptr<Sampler> sampler, const int depth, QList<PixelHitPoint> &progHitPoint);
+    void ProgressiveKdTree();
+    //virtual void TraceProgressivePhotons(const Scene& scene, ProgressiveKdNode* root,std::shared_ptr<Sampler> sampler, int depth, int numPhotons, QList<PixelHitPoint>& hitPoints);
+
 protected:
     Scene * scene;
     Camera const * const camera;			// A pointer to the Camera instance stored in MyGL.
     RealisticCamera const * const realCamera;
     Film * const film;						// A pointer to the Film instance stored in MyGL.
     std::shared_ptr<Sampler> sampler;       // A pointer to the Sampler that we will use to generate pixel samples for this thread.
+
+//****************************************Used in Photon Mapping********************************
     QList<Photon> photonMap;
     KdTree tree;
+//*******************************End of used in Photon Mapping***********************************
+
+//*************************************Used in Progressive Photon Mapping***************************************
+    QList<PixelHitPoint> progHitPoint;//the size is equal to the total size of the pixels
+    ProgressiveKdNode* rootProg;
+//*****************************************End of Use in Progressive Photon Mapping*******************
 
     Bounds2i bounds;                  // The min and max bounds of the film to which this thread renders
     int recursionLimit;
+
+    const int totalNumPhoton = 30000;
+    const int traceTimes = 5;
 
 };

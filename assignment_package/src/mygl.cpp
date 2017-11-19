@@ -14,6 +14,7 @@
 #include <scene/lights/diffusearealight.h>
 #include <QDateTime>
 #include <integrators/photonmappingintegrator.h>
+#include <integrators/progressivephotonmapping.h>
 
 constexpr float screen_quad_pos[] = {
     1.0f, -1.0f, 0.0f, 1.0f, 1.0f,
@@ -423,6 +424,9 @@ void MyGL::RenderScene()
             case PHOTON_MAPPING:
                 rt = new PhotonMappingIntegrator(tileBounds, &scene, sampler->Clone(seed), recursionLimit);
                 break;
+            case PROGRESSIVE_PHOTON_MAPPING:
+                rt = new ProgressivePhotonMapping(tileBounds, &scene, sampler->Clone(seed), recursionLimit);
+                break;
             }
 #define MULTITHREAD // Comment this line out to be able to debug with breakpoints.
 #ifdef MULTITHREAD
@@ -535,6 +539,9 @@ void MyGL::slot_SetIntegratorType(int t)
         break;
     case 4:
         integratorType = PHOTON_MAPPING;
+        break;
+    case 5:
+        integratorType = PROGRESSIVE_PHOTON_MAPPING;
         break;
     }
 }

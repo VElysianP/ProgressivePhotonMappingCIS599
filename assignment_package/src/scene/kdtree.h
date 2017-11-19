@@ -2,14 +2,8 @@
 #define KDTREE_H
 
 #include <scene/photon.h>
+#include <globals.h>
 
-enum SplitAxis
-{
-    UNKNOWN_AXIS = -1,
-    X_AXIS = 0,
-    Y_AXIS = 1,
-    Z_AXIS = 2
-};
 
 struct KdNode{
     KdNode* children1;

@@ -6,66 +6,77 @@ void Integrator::run()
     Render();
 }
 
+//void Integrator::TraceProgressivePhotons(const Scene &scene, ProgressiveKdNode *root, std::shared_ptr<Sampler> sampler, int depth, int numPhotons, QList<PixelHitPoint> &hitPoints)
+//{
+//    return;
+//}
+
 void Integrator::Render()
 {
     // Compute the bounds of our sample, clamping to screen's max bounds if necessary
     // Instantiate a FilmTile to store this thread's pixel colors
     std::vector<Point2i> tilePixels = bounds.GetPoints();
 
+    //***************************specially used in progressive photon mapping*************
+    for(Point2i pix : tilePixels)
+    {
+        ProgressiveRayTracing(*scene, pix, sampler,recursionLimit, progHitPoint);
+    }
+    //**************************************end of progressive photon mapping *******************
 
     //*****************specially used in photon mapping************************
-    PhotonTracing(*scene,sampler,recursionLimit);
-
-
-    std::cout<<"finish1"<<std::endl;
-
-    if(photonMap.size()!=0)
-    {
-        tree.root = new KdNode(photonMap[0],photonMap[0].photonType,photonMap[0].power);
+    //PhotonTracing(*scene,sampler,recursionLimit);
+    //std::cout<<"finish1"<<std::endl;
+    //if(photonMap.size()!=0)
+    //{
+        //tree.root = new KdNode(photonMap[0],photonMap[0].photonType,photonMap[0].power);
 //        tree.root->splitAxis = tree.chooseSplitAxis(tree.root,0);
-        for(int i = 1 ; i < photonMap.size();++i)
-        {
+        //for(int i = 1 ; i < photonMap.size();++i)
+        //{
 //            KdNode* tempNode;
 //            tempNode = tree.Insert(photonMap[i],tree.root);
-            KdNode* tempNode = tree.Insert(tree.root,photonMap[i]);
-        }
-    }
-    std::cout<<"finish2"<<std::endl;
+            //KdNode* tempNode = tree.Insert(tree.root,photonMap[i]);
+        //}
+    //}
+    //std::cout<<"finish2"<<std::endl;
+    //********************************************end of photon mapping **********************************
+
+
+    //******************************************For Path Tracing and Photon Mapping***********************************
     // For every pixel in the FilmTile:
-    for(Point2i pixel : tilePixels)
-    {
+    //for(Point2i pixel : tilePixels)
+    //{
         //Uncomment this to debug a particular pixel within this tile
 //        if(pixel.x != 404 || pixel.y != 418)
 //        {
 //            continue;
 //        }
-        Color3f pixelColor(0.f);
+        //Color3f pixelColor(0.f);
         // Ask our sampler for a collection of stratified samples, then raycast through each sample
-        std::vector<Point2f> pixelSamples = sampler->GenerateStratifiedSamples();
-        for(Point2f sample : pixelSamples)
-        {
-            sample = sample + Point2f(pixel); // _sample_ is [0, 1), but it needs to be translated to the pixel's origin.
-            // Generate a ray from this pixel sample
+        //std::vector<Point2f> pixelSamples = sampler->GenerateStratifiedSamples();
+        //for(Point2f sample : pixelSamples)
+        //{
+            //sample = sample + Point2f(pixel); // _sample_ is [0, 1), but it needs to be translated to the pixel's origin.
+            //Generate a ray from this pixel sample
 
+      //************************For pinhole camera**************************//
+            //Ray ray = camera->Raycast(sample);
 
-
-//************************For pinhole camera**************************//
-            Ray ray = camera->Raycast(sample);
-
-//************************For realistic camera*****************************//
-//            Ray ray = realCamera->Raycast(sample,sampler);
-
-
+     //************************For realistic camera*****************************//
+     //            Ray ray = realCamera->Raycast(sample,sampler);
             // Get the L (energy) for the ray by calling Li(ray, scene, tileSampler, arena)
             // Li is implemented by Integrator subclasses, like DirectLightingIntegrator
-            Color3f L = Li(ray, *scene, sampler, recursionLimit,Color3f(1.0f),tree);
+            //Color3f L = Li(ray, *scene, sampler, recursionLimit, Color3f(1.0f), tree);
             // Accumulate color in the pixel
-            pixelColor += L;
+            //pixelColor += L;
         }
         // Average all samples' energies
-        pixelColor /= pixelSamples.size();
-        film->SetPixelColor(pixel, glm::clamp(pixelColor, 0.f, 1.f));
-    }
+        //pixelColor /= pixelSamples.size();
+        //int pixelIndex = pixel.x + pixel.y * camera->height;
+        //pixelColor = progHitPoint[pixelIndex].color;
+        //film->SetPixelColor(pixel, glm::clamp(pixelColor, 0.f, 1.f));
+    //}
+
     //We're done here! All pixels have been given an averaged color.
     //do deletion
 //    for(auto mapPhs : photonMap){
@@ -73,6 +84,27 @@ void Integrator::Render()
 //    }
 //    photonMap.clear();
 //    tree.TreeDelete(tree.root);
+    //************************************************End of Path tracing and Photon Mapping********************************
+
+
+
+    //*****************************For Progressive Photon Mapping******************************************
+
+    //Kd tree construction part here //////////
+    //*************************************************//
+    for(int trace = 0;trace<traceTimes;trace++)
+    {
+        int photonsToTrace = ceil(totalNumPhoton / traceTimes);
+        TraceProgressivePhotons(*scene, rootProg, sampler, recursionLimit, photonsToTrace, progHitPoint);
+
+        for(Point2i px : tilePixels)
+        {
+            int pixelIndex = px.x + px.y*camera->height;
+            Color3f pixelColor = progHitPoint[pixelIndex].color;
+            film->SetPixelColor(px, glm::clamp(pixelColor, 0.f, 1.f));
+        }
+    }
+    //*************************************End of Progressive Photon Mapping***********************************
 }
 
 
@@ -83,6 +115,7 @@ void Integrator::ClampBounds()
     bounds = Bounds2i(bounds.Min(), max);
 }
 
+//For Photon mapping
 void Integrator::PhotonTracing(const Scene &scene, std::shared_ptr<Sampler> sampler, const int depth)
 {
     int lightsTotal = scene.lights.size();// the number of lights of the scene
@@ -113,7 +146,7 @@ void Integrator::PhotonTracing(const Scene &scene, std::shared_ptr<Sampler> samp
     }
 }
 
-
+//For Photon mapping
 void Integrator::cachePhotonColor(const Ray &r, const Scene &scene, int depth, const Color3f lightColor)
 {
     Intersection isec;
@@ -202,5 +235,68 @@ void Integrator::cachePhotonColor(const Ray &r, const Scene &scene, int depth, c
             break;
         }
     }
+
+}
+
+
+//for progressive photon mapping
+void Integrator::ProgressiveRayTracing(const Scene& scene,const Point2i pixel, std::shared_ptr<Sampler> sampler, const int depth, QList<PixelHitPoint>& progHitPoint)
+{
+    Intersection isec = Intersection();
+    Ray cameraRay = scene.camera.Raycast((float)pixel.x,(float)pixel.y);
+    Ray currentRay = cameraRay;
+    int dep = depth;
+
+    //shoot ray into the scene
+    while(dep>0)
+    {
+        //the ray hits something
+        if(scene.Intersect(currentRay,&isec))
+        {
+            if(!isec.ProduceBSDF())
+            {
+                return;
+            }
+            Vector3f woW = -currentRay.direction;
+            Vector3f wiW;
+            BxDFType typeBxdf;
+            float currentPdf;
+            Color3f fColor = isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&currentPdf,BSDF_ALL,&typeBxdf);
+
+            //specular bounce
+            if((typeBxdf & BSDF_SPECULAR)!=0)
+            {
+                dep--;
+                currentRay = Ray(isec.point,wiW);
+            }
+            //nonspecular bounce
+            else
+            {
+                PixelHitPoint tempHitPoint;
+                tempHitPoint.isec = isec;
+                tempHitPoint.ray = currentRay;
+                tempHitPoint.color = isec.Le(woW);
+                tempHitPoint.pixel = pixel;
+                progHitPoint.push_back(tempHitPoint);
+                //go out of the loop
+                return;
+            }
+        }
+        //the ray does not hit anything
+        else
+        {
+            PixelHitPoint tempHitPoint;
+            //tempHitPoint.isec = isec;
+            //tempHitPoint.ray = currentRay;
+            tempHitPoint.color = Color3f(0.0f);
+            tempHitPoint.pixel = pixel;
+            progHitPoint.push_back(tempHitPoint);
+            return;
+        }
+    }
+}
+
+void Integrator::ProgressiveKdTree()
+{
 
 }
