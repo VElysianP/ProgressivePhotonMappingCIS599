@@ -13,12 +13,17 @@ void Integrator::run()
 
 void Integrator::Render()
 {
+    //******************************Defined for Progressive Photon Mapping*********
+    QList<PixelHitPoint> progHitPoint;//the size is equal to the total size of the pixels
+    ProgressiveKdNode* rootProg;
+    //*****************************End of Progressive Photon Mapping design******
+
     // Compute the bounds of our sample, clamping to screen's max bounds if necessary
     // Instantiate a FilmTile to store this thread's pixel colors
     std::vector<Point2i> tilePixels = bounds.GetPoints();
 
     //***************************specially used in progressive photon mapping*************
-    for(Point2i pix : tilePixels)
+    for(Point2i pix :tilePixels)
     {
         ProgressiveRayTracing(*scene, pix, sampler,recursionLimit, progHitPoint);
     }
@@ -69,7 +74,7 @@ void Integrator::Render()
             //Color3f L = Li(ray, *scene, sampler, recursionLimit, Color3f(1.0f), tree);
             // Accumulate color in the pixel
             //pixelColor += L;
-        }
+        //}
         // Average all samples' energies
         //pixelColor /= pixelSamples.size();
         //int pixelIndex = pixel.x + pixel.y * camera->height;
@@ -95,14 +100,16 @@ void Integrator::Render()
     for(int trace = 0;trace<traceTimes;trace++)
     {
         int photonsToTrace = ceil(totalNumPhoton / traceTimes);
-        TraceProgressivePhotons(*scene, rootProg, sampler, recursionLimit, photonsToTrace, progHitPoint);
+        //TraceProgressivePhotons(*scene, rootProg, sampler, recursionLimit, photonsToTrace, progHitPoint);
 
-        for(Point2i px : tilePixels)
+        for(int index = 0;index <tilePixels.size();index++)
         {
-            int pixelIndex = px.x + px.y*camera->height;
-            Color3f pixelColor = progHitPoint[pixelIndex].color;
-            film->SetPixelColor(px, glm::clamp(pixelColor, 0.f, 1.f));
+            //int pixelIndex = px.x + camera->height * px.y;
+            Color3f pixelColor = progHitPoint[index].color;
+            Point2i pixelNum = progHitPoint[index].pixel;
+            film->SetPixelColor(pixelNum, glm::clamp(pixelColor, 0.f, 1.f));
         }
+
     }
     //*************************************End of Progressive Photon Mapping***********************************
 }
@@ -240,7 +247,7 @@ void Integrator::cachePhotonColor(const Ray &r, const Scene &scene, int depth, c
 
 
 //for progressive photon mapping
-void Integrator::ProgressiveRayTracing(const Scene& scene,const Point2i pixel, std::shared_ptr<Sampler> sampler, const int depth, QList<PixelHitPoint>& progHitPoint)
+void Integrator::ProgressiveRayTracing(const Scene& scene, const Point2i pixel, std::shared_ptr<Sampler> sampler, const int depth, QList<PixelHitPoint> &progHitPoint)
 {
     Intersection isec = Intersection();
     Ray cameraRay = scene.camera.Raycast((float)pixel.x,(float)pixel.y);
@@ -253,33 +260,43 @@ void Integrator::ProgressiveRayTracing(const Scene& scene,const Point2i pixel, s
         //the ray hits something
         if(scene.Intersect(currentRay,&isec))
         {
+            //hits the light sources
             if(!isec.ProduceBSDF())
             {
-                return;
-            }
-            Vector3f woW = -currentRay.direction;
-            Vector3f wiW;
-            BxDFType typeBxdf;
-            float currentPdf;
-            Color3f fColor = isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&currentPdf,BSDF_ALL,&typeBxdf);
-
-            //specular bounce
-            if((typeBxdf & BSDF_SPECULAR)!=0)
-            {
-                dep--;
-                currentRay = Ray(isec.point,wiW);
-            }
-            //nonspecular bounce
-            else
-            {
                 PixelHitPoint tempHitPoint;
-                tempHitPoint.isec = isec;
+//                tempHitPoint.isec = isec;
                 tempHitPoint.ray = currentRay;
-                tempHitPoint.color = isec.Le(woW);
+                tempHitPoint.color = isec.Le(-currentRay.direction);
                 tempHitPoint.pixel = pixel;
                 progHitPoint.push_back(tempHitPoint);
-                //go out of the loop
                 return;
+            }
+            else
+            {
+                Vector3f woW = -currentRay.direction;
+                Vector3f wiW;
+                BxDFType typeBxdf;
+                float currentPdf;
+                Color3f fColor = isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&currentPdf,BSDF_ALL,&typeBxdf);
+
+                //specular bounce
+                if((typeBxdf & BSDF_SPECULAR)!=0)
+                {
+                    dep--;
+                    currentRay = Ray(isec.point,wiW);
+                }
+                //nonspecular bounce
+                else
+                {
+                    PixelHitPoint tempHitPoint;
+                    tempHitPoint.isec = isec;
+                    tempHitPoint.ray = currentRay;
+                    tempHitPoint.color = isec.Le(-currentRay.direction);
+                    tempHitPoint.pixel = pixel;
+                    progHitPoint.push_back(tempHitPoint);
+                    //go out of the loop
+                    return;
+                }
             }
         }
         //the ray does not hit anything
@@ -299,4 +316,9 @@ void Integrator::ProgressiveRayTracing(const Scene& scene,const Point2i pixel, s
 void Integrator::ProgressiveKdTree()
 {
 
+}
+
+void Integrator::TraceProgressivePhotons(const Scene& scene, ProgressiveKdNode* root,std::shared_ptr<Sampler> sampler, int depth, int numPhotons, QList<PixelHitPoint>& hitPoints)
+{
+    return;
 }

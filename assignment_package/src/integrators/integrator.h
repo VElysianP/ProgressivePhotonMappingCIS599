@@ -49,7 +49,7 @@ public:
     //specially for Progressive Photon Mapping
     void ProgressiveRayTracing(const Scene& scene,const Point2i pixel, std::shared_ptr<Sampler> sampler, const int depth, QList<PixelHitPoint> &progHitPoint);
     void ProgressiveKdTree();
-    //virtual void TraceProgressivePhotons(const Scene& scene, ProgressiveKdNode* root,std::shared_ptr<Sampler> sampler, int depth, int numPhotons, QList<PixelHitPoint>& hitPoints);
+    virtual void TraceProgressivePhotons(const Scene& scene, ProgressiveKdNode* root,std::shared_ptr<Sampler> sampler, int depth, int numPhotons, QList<PixelHitPoint>& hitPoints);
 
 protected:
     Scene * scene;
@@ -64,8 +64,8 @@ protected:
 //*******************************End of used in Photon Mapping***********************************
 
 //*************************************Used in Progressive Photon Mapping***************************************
-    QList<PixelHitPoint> progHitPoint;//the size is equal to the total size of the pixels
-    ProgressiveKdNode* rootProg;
+    //QList<PixelHitPoint> progHitPoint;//the size is equal to the total size of the pixels
+    //ProgressiveKdNode* rootProg;
 //*****************************************End of Use in Progressive Photon Mapping*******************
 
     Bounds2i bounds;                  // The min and max bounds of the film to which this thread renders
