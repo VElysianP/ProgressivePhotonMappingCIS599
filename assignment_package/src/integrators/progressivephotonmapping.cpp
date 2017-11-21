@@ -48,7 +48,7 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
                     //rewrite the newColor of hitpoint
                     //add up the numNewPhotons amount
                     //
-
+                    break;
                 }
             }
 
