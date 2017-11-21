@@ -14,8 +14,10 @@ struct PixelHitPoint{
     Intersection isec;//intersection in the scene contains all of the information
     Ray ray; //the coming firection of ray
     Point2i pixel; //the corresponding pixel of the hitpoint
-    int numPhotons = 0;
+    int numPhotons = 0; //the number of photons
+    int numNewPhotons = 0; //the number of new Photons
     Color3f color;//the color to color the exact pixel finally
+    Color3f newColor = Color3f(0.0f);//the tempColor storage for flux correction
     float radius = 2.0f;// the radius that we will check for the final color result
     float density = 1.0f; //for shrinking the radius for better results
 //    Spectrum spec;

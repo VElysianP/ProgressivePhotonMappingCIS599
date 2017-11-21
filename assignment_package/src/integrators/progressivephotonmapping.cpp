@@ -10,7 +10,9 @@ Color3f ProgressivePhotonMapping::Li(const Ray &ray, const Scene &scene, std::sh
 
 void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, ProgressiveKdNode* root,std::shared_ptr<Sampler> sampler, int depth, int numPhotons, QList<PixelHitPoint>& hitPoints)
 {
-
+    //this value functions as shrinking the radius
+    //somehow needs to change based on our need
+    float alpha = 0.6;
     for(int count = 0;count<numPhotons;count++)
     {
         int chosenLightNum = std::floor(sampler->Get1D()*scene.lights.size());
@@ -43,7 +45,10 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
                 else
                 {
                     //find the nearest hitpoint
-                    //rewrite the color of hitpoint
+                    //rewrite the newColor of hitpoint
+                    //add up the numNewPhotons amount
+                    //
+
                 }
             }
 
@@ -61,8 +66,39 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
         }
     }
 
+
     //change the density and the radius
     //recalculate the hitpoint parameters
     //correct the color for this hit point
+    for(int hitCount = 0;hitCount < hitPoints.size();hitCount++)
+    {
+        //which means the first photon trace
+        if(hitPoints[hitCount].numPhotons == 0)
+        {
+            hitPoints[hitCount].numPhotons += hitPoints[hitCount].numNewPhotons;
+            hitPoints[hitCount].density = hitPoints[hitCount].numPhotons/(Pi * std::pow(hitPoints[hitCount].radius,2));
+        }
+        //more than 1 photon traces
+        else
+        {
+            //radius shrinking
+            float lastRadius = hitPoints[hitCount].radius;
+            int tempPhotonAmount = hitPoints[hitCount].numNewPhotons + hitPoints[hitCount].numPhotons;
+            hitPoints[hitCount].numPhotons += std::floor(hitPoints[hitCount].numNewPhotons * alpha);
+
+            float tempPhotonRatio = hitPoints[hitCount].numPhotons/tempPhotonAmount;
+            hitPoints[hitCount].radius = lastRadius * std::sqrt(tempPhotonRatio);
+
+            //flux correction
+            hitPoints[hitCount].color += hitPoints[hitCount].newColor * tempPhotonRatio;
+        }
+
+        //reinitialize
+        hitPoints[hitCount].numNewPhotons = 0;
+        hitPoints[hitCount].newColor = Color3f(0.f);
+    }
     return;
 }
+
+
+
