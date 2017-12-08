@@ -15,17 +15,20 @@ void Integrator::Render()
 {
     //******************************Defined for Progressive Photon Mapping*********
     QList<PixelHitPoint> progHitPoint;//the size is equal to the total size of the pixels
-    ProgressiveKdNode* rootProg;
+    ProgressiveKdNode* rootProg = nullptr;
     //*****************************End of Progressive Photon Mapping design******
 
     // Compute the bounds of our sample, clamping to screen's max bounds if necessary
     // Instantiate a FilmTile to store this thread's pixel colors
     std::vector<Point2i> tilePixels = bounds.GetPoints();
 
+    int indexCount = 0;
     //***************************specially used in progressive photon mapping*************
     for(Point2i pix :tilePixels)
     {
         ProgressiveRayTracing(*scene, pix, sampler,recursionLimit, progHitPoint);
+        rootProg = rootProg->InsertProgressiveKdTree(rootProg,progHitPoint[indexCount],indexCount);
+        indexCount++;
     }
     //**************************************end of progressive photon mapping *******************
 
@@ -100,7 +103,7 @@ void Integrator::Render()
     for(int trace = 0;trace<traceTimes;trace++)
     {
         int photonsToTrace = ceil(totalNumPhoton / traceTimes);
-        //TraceProgressivePhotons(*scene, rootProg, sampler, recursionLimit, photonsToTrace, progHitPoint);
+        TraceProgressivePhotons(*scene, rootProg, sampler, recursionLimit, photonsToTrace, progHitPoint);
 
         for(int index = 0;index <tilePixels.size();index++)
         {
@@ -111,6 +114,7 @@ void Integrator::Render()
         }
 
     }
+    rootProg->TreeDeleteProg(rootProg);
     //*************************************End of Progressive Photon Mapping***********************************
 }
 
@@ -268,6 +272,7 @@ void Integrator::ProgressiveRayTracing(const Scene& scene, const Point2i pixel, 
                 tempHitPoint.ray = currentRay;
                 tempHitPoint.color = isec.Le(-currentRay.direction);
                 tempHitPoint.pixel = pixel;
+                tempHitPoint.position = isec.point;
                 progHitPoint.push_back(tempHitPoint);
                 return;
             }
@@ -293,6 +298,7 @@ void Integrator::ProgressiveRayTracing(const Scene& scene, const Point2i pixel, 
                     tempHitPoint.ray = currentRay;
                     tempHitPoint.color = isec.Le(-currentRay.direction);
                     tempHitPoint.pixel = pixel;
+                    tempHitPoint.position = isec.point;
                     progHitPoint.push_back(tempHitPoint);
                     //go out of the loop
                     return;
@@ -307,17 +313,20 @@ void Integrator::ProgressiveRayTracing(const Scene& scene, const Point2i pixel, 
             //tempHitPoint.ray = currentRay;
             tempHitPoint.color = Color3f(0.0f);
             tempHitPoint.pixel = pixel;
+            tempHitPoint.position = Point3f((float)-INFINITY);
             progHitPoint.push_back(tempHitPoint);
             return;
         }
     }
 }
 
-void Integrator::ProgressiveKdTree()
+void Integrator::ProgressiveKdTree(ProgressiveKdNode* root, PixelHitPoint hitPoint, int linearIndex)
 {
-
+    root = root->InsertProgressiveKdTree(root,hitPoint,linearIndex);
 }
 
+//implemented inside ProgressivePhotonMapping
+//not necessary to do anything here
 void Integrator::TraceProgressivePhotons(const Scene& scene, ProgressiveKdNode* root,std::shared_ptr<Sampler> sampler, int depth, int numPhotons, QList<PixelHitPoint>& hitPoints)
 {
     return;

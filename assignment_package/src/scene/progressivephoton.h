@@ -14,6 +14,7 @@ struct PixelHitPoint{
     Intersection isec;//intersection in the scene contains all of the information
     Ray ray; //the coming firection of ray
     Point2i pixel; //the corresponding pixel of the hitpoint
+    Point3f position; //the hitpoint position in world coordinate in the scene
     int numPhotons = 0; //the number of photons
     int numNewPhotons = 0; //the number of new Photons
     Color3f color;//the color to color the exact pixel finally

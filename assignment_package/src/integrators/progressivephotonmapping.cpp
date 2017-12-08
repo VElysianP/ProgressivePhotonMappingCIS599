@@ -32,22 +32,40 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
             if(scene.Intersect(tempRay,&isec))
             {
                 //the photon meets the light source
+                //throw the photon away
+                //basically the photon will not hit the chosen light source itself
                 if(!isec.ProduceBSDF())
                 {
-                    return;
+                    break;
                 }
                 Color3f fColor = isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&currentPdf,BSDF_ALL,&typeBxdf);
+                //the photon meets specular bounce
                 if((typeBxdf&BSDF_SPECULAR)!=0)
                 {
                     currentColor = currentColor * fColor * AbsDot(wiW,isec.bsdf->normal);
                     tempRay = Ray(isec.point,wiW);
                 }
+                //the photon meet non-specular bounce
                 else
                 {
                     //find the nearest hitpoint
                     //rewrite the newColor of hitpoint
                     //add up the numNewPhotons amount
                     //
+                    int nearHitPointIndex = root->NearHitPointProg(isec.point,root);
+
+                    //which means that there exists photon that has proper distance to a hitpoint
+                    //and this is the index of the proper hitpoint
+                    //add up the color of the hitpoint and then update the datas of this hitpoint
+                    //int foundPhotons = 0;
+                    if(nearHitPointIndex != -1)
+                    {
+                        hitPoints[nearHitPointIndex].newColor += currentColor;
+                        hitPoints[nearHitPointIndex].numNewPhotons += 1;
+                        //foundPhotons++;
+                    }
+                    //if there is not proper hitpoint near the photon
+                    //just throw away this photon
                     break;
                 }
             }
@@ -76,6 +94,9 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
         if(hitPoints[hitCount].numPhotons == 0)
         {
             hitPoints[hitCount].numPhotons += hitPoints[hitCount].numNewPhotons;
+            hitPoints[hitCount].color += Color3f(hitPoints[hitCount].newColor.x / hitPoints[hitCount].numNewPhotons,
+                                                hitPoints[hitCount].newColor.y / hitPoints[hitCount].numNewPhotons,
+                                                hitPoints[hitCount].newColor.z / hitPoints[hitCount].numNewPhotons);
             hitPoints[hitCount].density = hitPoints[hitCount].numPhotons/(Pi * std::pow(hitPoints[hitCount].radius,2));
         }
         //more than 1 photon traces

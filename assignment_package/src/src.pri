@@ -57,8 +57,7 @@ SOURCES += \
     $$PWD/scene/causticphoton.cpp \
     $$PWD/scene/globalilluminationphoton.cpp \
     $$PWD/scene/kdtree.cpp \
-    $$PWD/integrators/progressivephotonmapping.cpp \
-    $$PWD/scene/progressivekdtree.cpp
+    $$PWD/integrators/progressivephotonmapping.cpp
 
 HEADERS += \
     $$PWD/mainwindow.h \
