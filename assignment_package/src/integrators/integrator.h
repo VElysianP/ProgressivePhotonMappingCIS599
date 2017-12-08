@@ -47,7 +47,7 @@ public:
 
 
     //specially for Progressive Photon Mapping
-    void ProgressiveRayTracing(const Scene& scene, const Point2i pixel, std::shared_ptr<Sampler> sampler, const int depth, QList<PixelHitPoint> &progHitPoint);
+    void ProgressiveRayTracing(Ray cameraRay, const Scene& scene, const Point2i pixel, std::shared_ptr<Sampler> sampler, const int depth, QList<PixelHitPoint> &progHitPoint);
     void ProgressiveKdTree(ProgressiveKdNode *root, PixelHitPoint hitPoint, int linearIndex);
     virtual void TraceProgressivePhotons(const Scene& scene, ProgressiveKdNode* root,std::shared_ptr<Sampler> sampler, int depth, int numPhotons, QList<PixelHitPoint>& hitPoints);
 

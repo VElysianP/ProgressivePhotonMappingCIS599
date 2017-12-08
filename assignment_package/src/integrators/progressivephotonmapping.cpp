@@ -90,6 +90,7 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
     //correct the color for this hit point
     for(int hitCount = 0;hitCount < hitPoints.size();hitCount++)
     {
+
         //which means the first photon trace
         if(hitPoints[hitCount].numPhotons == 0)
         {
@@ -117,6 +118,13 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
         //reinitialize
         hitPoints[hitCount].numNewPhotons = 0;
         hitPoints[hitCount].newColor = Color3f(0.f);
+
+        /*hitPoints[hitCount].numPhotons += hitPoints[hitCount].numNewPhotons;
+        hitPoints[hitCount].color += Color3f(hitPoints[hitCount].newColor.x / hitPoints[hitCount].numNewPhotons,
+                                             hitPoints[hitCount].newColor.y / hitPoints[hitCount].numNewPhotons,
+                                             hitPoints[hitCount].newColor.z / hitPoints[hitCount].numNewPhotons);
+        hitPoints[hitCount].newColor = Color3f(0.0f);
+        hitPoints[hitCount].numNewPhotons = 0;*/
     }
     return;
 }

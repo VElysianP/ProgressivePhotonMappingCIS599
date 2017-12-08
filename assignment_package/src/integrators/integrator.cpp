@@ -22,11 +22,13 @@ void Integrator::Render()
     // Instantiate a FilmTile to store this thread's pixel colors
     std::vector<Point2i> tilePixels = bounds.GetPoints();
 
-    int indexCount = 0;
     //***************************specially used in progressive photon mapping*************
+    int indexCount = 0;
     for(Point2i pix :tilePixels)
     {
-        ProgressiveRayTracing(*scene, pix, sampler,recursionLimit, progHitPoint);
+        Ray ray = camera->Raycast(pix);
+        //Ray ray = realCamera->Raycast(pix,sampler);
+        ProgressiveRayTracing(ray, *scene, pix, sampler,recursionLimit, progHitPoint);
         rootProg = rootProg->InsertProgressiveKdTree(rootProg,progHitPoint[indexCount],indexCount);
         indexCount++;
     }
@@ -112,7 +114,6 @@ void Integrator::Render()
             Point2i pixelNum = progHitPoint[index].pixel;
             film->SetPixelColor(pixelNum, glm::clamp(pixelColor, 0.f, 1.f));
         }
-
     }
     rootProg->TreeDeleteProg(rootProg);
     //*************************************End of Progressive Photon Mapping***********************************
@@ -251,10 +252,10 @@ void Integrator::cachePhotonColor(const Ray &r, const Scene &scene, int depth, c
 
 
 //for progressive photon mapping
-void Integrator::ProgressiveRayTracing(const Scene& scene, const Point2i pixel, std::shared_ptr<Sampler> sampler, const int depth, QList<PixelHitPoint> &progHitPoint)
+void Integrator::ProgressiveRayTracing(Ray cameraRay, const Scene& scene, const Point2i pixel, std::shared_ptr<Sampler> sampler, const int depth, QList<PixelHitPoint> &progHitPoint)
 {
     Intersection isec = Intersection();
-    Ray cameraRay = scene.camera.Raycast((float)pixel.x,(float)pixel.y);
+    //cameraRay = scene.camera.Raycast((float)pixel.x,(float)pixel.y);
     Ray currentRay = cameraRay;
     int dep = depth;
 
@@ -296,7 +297,8 @@ void Integrator::ProgressiveRayTracing(const Scene& scene, const Point2i pixel, 
                     PixelHitPoint tempHitPoint;
                     tempHitPoint.isec = isec;
                     tempHitPoint.ray = currentRay;
-                    tempHitPoint.color = isec.Le(-currentRay.direction);
+                    //tempHitPoint.color = isec.Le(-currentRay.direction);
+                    tempHitPoint.color = Color3f(1.0,0.0,0.0);
                     tempHitPoint.pixel = pixel;
                     tempHitPoint.position = isec.point;
                     progHitPoint.push_back(tempHitPoint);
