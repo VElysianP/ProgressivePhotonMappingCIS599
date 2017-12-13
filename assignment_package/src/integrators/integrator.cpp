@@ -54,38 +54,38 @@ void Integrator::Render()
 
     //******************************************For Path Tracing and Photon Mapping***********************************
     // For every pixel in the FilmTile:
-    //for(Point2i pixel : tilePixels)
-    //{
-        //Uncomment this to debug a particular pixel within this tile
-//        if(pixel.x != 404 || pixel.y != 418)
+//    for(Point2i pixel : tilePixels)
+//    {
+//        //Uncomment this to debug a particular pixel within this tile
+//        //if(pixel.x != 404 || pixel.y != 418)
+//        //{
+//        //    continue;
+//       // }
+//        Color3f pixelColor(0.f);
+//         //Ask our sampler for a collection of stratified samples, then raycast through each sample
+//        std::vector<Point2f> pixelSamples = sampler->GenerateStratifiedSamples();
+//        for(Point2f sample : pixelSamples)
 //        {
-//            continue;
+//            sample = sample + Point2f(pixel); // _sample_ is [0, 1), but it needs to be translated to the pixel's origin.
+//            //Generate a ray from this pixel sample
+
+//      //************************For pinhole camera**************************//
+//            Ray ray = camera->Raycast(sample);
+
+//    // ************************For realistic camera*****************************//
+//                // Ray ray = realCamera->Raycast(sample,sampler);
+//            // Get the L (energy) for the ray by calling Li(ray, scene, tileSampler, arena)
+//            // Li is implemented by Integrator subclasses, like DirectLightingIntegrator
+//            Color3f L = Li(ray, *scene, sampler, recursionLimit, Color3f(1.0f), tree);
+//             //Accumulate color in the pixel
+//            pixelColor += L;
 //        }
-        //Color3f pixelColor(0.f);
-        // Ask our sampler for a collection of stratified samples, then raycast through each sample
-        //std::vector<Point2f> pixelSamples = sampler->GenerateStratifiedSamples();
-        //for(Point2f sample : pixelSamples)
-        //{
-            //sample = sample + Point2f(pixel); // _sample_ is [0, 1), but it needs to be translated to the pixel's origin.
-            //Generate a ray from this pixel sample
-
-      //************************For pinhole camera**************************//
-            //Ray ray = camera->Raycast(sample);
-
-     //************************For realistic camera*****************************//
-     //            Ray ray = realCamera->Raycast(sample,sampler);
-            // Get the L (energy) for the ray by calling Li(ray, scene, tileSampler, arena)
-            // Li is implemented by Integrator subclasses, like DirectLightingIntegrator
-            //Color3f L = Li(ray, *scene, sampler, recursionLimit, Color3f(1.0f), tree);
-            // Accumulate color in the pixel
-            //pixelColor += L;
-        //}
-        // Average all samples' energies
-        //pixelColor /= pixelSamples.size();
-        //int pixelIndex = pixel.x + pixel.y * camera->height;
-        //pixelColor = progHitPoint[pixelIndex].color;
-        //film->SetPixelColor(pixel, glm::clamp(pixelColor, 0.f, 1.f));
-    //}
+//         //Average all samples' energies
+//        pixelColor /= pixelSamples.size();
+//        int pixelIndex = pixel.x + pixel.y * camera->height;
+//        pixelColor = progHitPoint[pixelIndex].color;
+//        film->SetPixelColor(pixel, glm::clamp(pixelColor, 0.f, 1.f));
+//    }
 
     //We're done here! All pixels have been given an averaged color.
     //do deletion
@@ -105,7 +105,7 @@ void Integrator::Render()
     for(int trace = 0;trace<traceTimes;trace++)
     {
         int photonsToTrace = ceil(totalNumPhoton / traceTimes);
-        TraceProgressivePhotons(*scene, rootProg, sampler, recursionLimit, photonsToTrace, progHitPoint);
+        //TraceProgressivePhotons(*scene, rootProg, sampler, recursionLimit, photonsToTrace, progHitPoint);
 
         for(int index = 0;index <tilePixels.size();index++)
         {
@@ -252,15 +252,18 @@ void Integrator::cachePhotonColor(const Ray &r, const Scene &scene, int depth, c
 
 
 //for progressive photon mapping
+//it also works as the first trace of direct lighting
+//write the color of direct lighting into the hitPoint
 void Integrator::ProgressiveRayTracing(Ray cameraRay, const Scene& scene, const Point2i pixel, std::shared_ptr<Sampler> sampler, const int depth, QList<PixelHitPoint> &progHitPoint)
 {
     Intersection isec = Intersection();
     //cameraRay = scene.camera.Raycast((float)pixel.x,(float)pixel.y);
     Ray currentRay = cameraRay;
-    int dep = depth;
+    int dep = 0;
+    Color3f finalColor = Color3f(1.0f);
 
     //shoot ray into the scene
-    while(dep>0)
+    while(dep < depth)
     {
         //the ray hits something
         if(scene.Intersect(currentRay,&isec))
@@ -277,6 +280,7 @@ void Integrator::ProgressiveRayTracing(Ray cameraRay, const Scene& scene, const 
                 progHitPoint.push_back(tempHitPoint);
                 return;
             }
+            //the hit point is not the light source
             else
             {
                 Vector3f woW = -currentRay.direction;
@@ -288,17 +292,32 @@ void Integrator::ProgressiveRayTracing(Ray cameraRay, const Scene& scene, const 
                 //specular bounce
                 if((typeBxdf & BSDF_SPECULAR)!=0)
                 {
-                    dep--;
+                    dep++;
+                    finalColor = finalColor * fColor;
                     currentRay = Ray(isec.point,wiW);
+
+                    if(dep == depth)
+                    {
+                        PixelHitPoint tempHitPoint;
+                        tempHitPoint.pixel = pixel;
+                        tempHitPoint.ray = currentRay;
+                        tempHitPoint.color = isec.Le(woW) + finalColor;
+                        tempHitPoint.isec = isec;
+                        tempHitPoint.position = isec.point;
+                        progHitPoint.push_back(tempHitPoint);
+                        return;
+                    }
+
+                    continue;
                 }
                 //nonspecular bounce
                 else
                 {
                     PixelHitPoint tempHitPoint;
-                    tempHitPoint.isec = isec;
-                    tempHitPoint.ray = currentRay;
-                    tempHitPoint.color = isec.Le(-currentRay.direction);
                     tempHitPoint.pixel = pixel;
+                    tempHitPoint.ray = currentRay;
+                    tempHitPoint.color = isec.Le(woW) + finalColor;
+                    tempHitPoint.isec = isec;
                     tempHitPoint.position = isec.point;
                     progHitPoint.push_back(tempHitPoint);
                     //go out of the loop

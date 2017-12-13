@@ -72,16 +72,15 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
                     //if there is not proper hitpoint near the photon
                     //just throw away this photon
                 }
-            }
-
-            //Russian Roulette
-            float uniformRandom = sampler->Get1D();
-            float maxInThroughput = std::max(std::max(currentColor.x,currentColor.y),currentColor.z);
-            if((depth - traceNum)<3)
-            {
-                if(uniformRandom > maxInThroughput)
+                //Russian Roulette
+                float uniformRandom = sampler->Get1D();
+                float maxInThroughput = std::max(std::max(currentColor.x,currentColor.y),currentColor.z);
+                if((depth - traceNum)<3)
                 {
-                    break;
+                    if(uniformRandom > maxInThroughput)
+                    {
+                        break;
+                    }
                 }
             }
             traceNum++;
@@ -129,10 +128,11 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
                 hitPoints[hitCount].radius = lastRadius * std::sqrt(tempPhotonRatio);
 
                 //flux correction
-                Color3f averageColor = Color3f(hitPoints[hitCount].newColor.x / hitPoints[hitCount].numNewPhotons,
+                Color3f averageColor = hitPoints[hitCount].isec.objectHit->GetMaterial()->GetMaterialKdColor() *
+                                       Color3f(hitPoints[hitCount].newColor.x / hitPoints[hitCount].numNewPhotons,
                                                hitPoints[hitCount].newColor.y / hitPoints[hitCount].numNewPhotons,
                                                hitPoints[hitCount].newColor.z / hitPoints[hitCount].numNewPhotons);
-                hitPoints[hitCount].color += hitPoints[hitCount].isec.objectHit->GetMaterial()->GetMaterialKdColor() * averageColor * tempPhotonRatio;
+                hitPoints[hitCount].color += averageColor * tempPhotonRatio;
             }
 
         }

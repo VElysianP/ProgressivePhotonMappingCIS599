@@ -94,11 +94,11 @@ struct ProgressiveKdNode{
                 SplitAxis axis = root->axis;
                 if(position[axis] <= root->hitPoint.position[axis])
                 {
-                    int index = NearHitPointProg(position, root->chid0);
+                    return NearHitPointProg(position, root->chid0);
                 }
                 else
                 {
-                    int index = NearHitPointProg(position, root->chid1);
+                    return NearHitPointProg(position, root->chid1);
                 }
             }
 
