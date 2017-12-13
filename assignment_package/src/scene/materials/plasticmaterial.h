@@ -16,6 +16,10 @@ public:
 
     void ProduceBSDF(Intersection *isect) const;
 
+    Color3f GetMaterialKdColor() const;
+    Color3f GetMaterialKsColor() const;
+    Color3f GetMaterialKrColor() const;
+    Color3f GetMaterialKtColor() const;
 
 private:
     Color3f Kd;                    // The diffuse spectral reflection of this material.

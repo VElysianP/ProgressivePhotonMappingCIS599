@@ -45,3 +45,23 @@ void MirrorMaterial::ProduceBSDF(Intersection *isect) const
         isect->bsdf->Add(new MicrofacetBRDF(color, distrib, new FresnelNoOp()));
     }
 }
+
+
+Color3f MirrorMaterial::GetMaterialKrColor() const
+{
+    return Kr;
+}
+Color3f MirrorMaterial::GetMaterialKdColor() const
+{
+    return Color3f(-1.0f);
+}
+
+Color3f MirrorMaterial::GetMaterialKsColor() const
+{
+    return Color3f(-1.0f);
+}
+
+Color3f MirrorMaterial::GetMaterialKtColor() const
+{
+    return Color3f(-1.0f);
+}

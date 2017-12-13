@@ -49,3 +49,22 @@ void PlasticMaterial::ProduceBSDF(Intersection *isect) const
 
     isect->bsdf->Add(new MicrofacetBRDF(Ks, distrib, fresnel));
 }
+
+
+Color3f PlasticMaterial::GetMaterialKdColor() const
+{
+    return Kd;
+}
+
+Color3f PlasticMaterial::GetMaterialKsColor() const
+{
+    return Ks;
+}
+Color3f PlasticMaterial::GetMaterialKrColor() const
+{
+    return Color3f(-1.0f);
+}
+Color3f PlasticMaterial::GetMaterialKtColor() const
+{
+    return Color3f(-1.0f);
+}

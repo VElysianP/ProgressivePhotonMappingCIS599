@@ -26,3 +26,23 @@ void MatteMaterial::ProduceBSDF(Intersection *isect) const
     }
     //Else do Oren-Nayar (not required implementation)
 }
+
+Color3f MatteMaterial::GetMaterialKdColor() const
+{
+    return Kd;
+}
+Color3f MatteMaterial::GetMaterialKrColor() const
+{
+    return Color3f(-1.0f);
+}
+
+Color3f MatteMaterial::GetMaterialKsColor() const
+{
+    return Color3f(-1.0f);
+}
+
+Color3f MatteMaterial::GetMaterialKtColor() const
+{
+    return Color3f(-1.0f);
+}
+

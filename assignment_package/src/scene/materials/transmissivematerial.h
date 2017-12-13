@@ -13,6 +13,11 @@ public:
 
     void ProduceBSDF(Intersection *isect) const;
 
+    Color3f GetMaterialKtColor() const;
+    Color3f GetMaterialKdColor() const;
+    Color3f GetMaterialKrColor() const;
+    Color3f GetMaterialKsColor() const;
+
 
 private:
     Color3f Kt;                    // The spectral transmission of this material.

@@ -22,3 +22,20 @@ void TransmissiveMaterial::ProduceBSDF(Intersection *isect) const
 
     isect->bsdf->Add(new SpecularBTDF(color, 1.f, indexOfRefraction, new FresnelNoReflect()));
 }
+
+Color3f TransmissiveMaterial::GetMaterialKtColor() const
+{
+    return Kt;
+}
+Color3f TransmissiveMaterial::GetMaterialKdColor() const
+{
+    return Color3f(-1.0f);
+}
+Color3f TransmissiveMaterial::GetMaterialKrColor() const
+{
+    return Color3f(-1.0f);
+}
+Color3f TransmissiveMaterial::GetMaterialKsColor() const
+{
+    return Color3f(-1.0f);
+}

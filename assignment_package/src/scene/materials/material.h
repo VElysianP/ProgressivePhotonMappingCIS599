@@ -15,6 +15,12 @@
 class Material {
   public:
     virtual void ProduceBSDF(Intersection *isect) const = 0;
+    //if the color returns vec3(-1.0f) which means that there
+    // are no such properties inside this material
+    virtual Color3f GetMaterialKdColor() const = 0;
+    virtual Color3f GetMaterialKrColor() const = 0;
+    virtual Color3f GetMaterialKsColor() const = 0;
+    virtual Color3f GetMaterialKtColor() const = 0;
     virtual ~Material(){}
 
     static Color3f GetImageColor(const Point2f &uv_coord, const QImage* const image)

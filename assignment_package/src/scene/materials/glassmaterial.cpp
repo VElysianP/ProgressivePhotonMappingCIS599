@@ -31,3 +31,21 @@ void GlassMaterial::ProduceBSDF(Intersection *isect) const
     isect->bsdf->Add(new SpecularBTDF(transmitColor, 1.f, indexOfRefraction, new FresnelDielectric(1.f, indexOfRefraction)));
     
 }
+
+Color3f GlassMaterial::GetMaterialKrColor() const
+{
+    return Kr;
+}
+
+Color3f GlassMaterial::GetMaterialKtColor() const
+{
+    return Kt;
+}
+Color3f GlassMaterial::GetMaterialKdColor() const
+{
+    return Color3f(-1.0f);
+}
+Color3f GlassMaterial::GetMaterialKsColor() const
+{
+    return Color3f(-1.0f);
+}

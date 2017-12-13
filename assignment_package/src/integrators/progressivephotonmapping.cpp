@@ -20,8 +20,10 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
         Intersection isec = Intersection();
         BxDFType typeBxdf;
         Color3f currentColor = scene.lights[chosenLightNum]->emittedLight;
+        int traceNum = 0;
 
-        while(depth>0)
+        //the value of depth equals to the recursion limit
+        while(traceNum < depth)
         {
             Vector3f woW = -tempRay.direction;
             Vector3f wiW;
@@ -60,27 +62,29 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
                     //int foundPhotons = 0;
                     if(nearHitPointIndex != -1)
                     {
+                        currentColor = currentColor * fColor * AbsDot(wiW,isec.bsdf->normal);
                         hitPoints[nearHitPointIndex].newColor += currentColor;
                         hitPoints[nearHitPointIndex].numNewPhotons += 1;
                         //foundPhotons++;
+
+                        tempRay = Ray(isec.point,wiW);
                     }
                     //if there is not proper hitpoint near the photon
                     //just throw away this photon
-                    break;
                 }
             }
 
             //Russian Roulette
             float uniformRandom = sampler->Get1D();
             float maxInThroughput = std::max(std::max(currentColor.x,currentColor.y),currentColor.z);
-            if((recursionLimit - depth)>3)
+            if((depth - traceNum)<3)
             {
                 if(uniformRandom > maxInThroughput)
                 {
                     break;
                 }
             }
-            depth--;
+            traceNum++;
         }
     }
 
@@ -91,40 +95,50 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
     for(int hitCount = 0;hitCount < hitPoints.size();hitCount++)
     {
 
+        //which means this hitPoint hits the light source
+        //go to the next hitpoint
+        if(!hitPoints[hitCount].isec.ProduceBSDF())
+        {
+            break;
+        }
         //which means the first photon trace
         if(hitPoints[hitCount].numPhotons == 0)
         {
+            if(hitPoints[hitCount].numNewPhotons!=0)
+            {
             hitPoints[hitCount].numPhotons += hitPoints[hitCount].numNewPhotons;
-            hitPoints[hitCount].color += Color3f(hitPoints[hitCount].newColor.x / hitPoints[hitCount].numNewPhotons,
+
+            hitPoints[hitCount].color = hitPoints[hitCount].isec.objectHit->GetMaterial()->GetMaterialKdColor() *
+                                        Color3f(hitPoints[hitCount].newColor.x / hitPoints[hitCount].numNewPhotons,
                                                 hitPoints[hitCount].newColor.y / hitPoints[hitCount].numNewPhotons,
                                                 hitPoints[hitCount].newColor.z / hitPoints[hitCount].numNewPhotons);
             hitPoints[hitCount].density = hitPoints[hitCount].numPhotons/(Pi * std::pow(hitPoints[hitCount].radius,2));
+            }
         }
         //more than 1 photon traces
         else
         {
-            //radius shrinking
-            float lastRadius = hitPoints[hitCount].radius;
-            int tempPhotonAmount = hitPoints[hitCount].numNewPhotons + hitPoints[hitCount].numPhotons;
-            hitPoints[hitCount].numPhotons += std::floor(hitPoints[hitCount].numNewPhotons * alpha);
+            if(hitPoints[hitCount].numNewPhotons!=0)
+            {
+                //radius shrinking
+                float lastRadius = hitPoints[hitCount].radius;
+                int tempPhotonAmount = hitPoints[hitCount].numNewPhotons + hitPoints[hitCount].numPhotons;
+                hitPoints[hitCount].numPhotons += std::floor(hitPoints[hitCount].numNewPhotons * alpha);
 
-            float tempPhotonRatio = hitPoints[hitCount].numPhotons/tempPhotonAmount;
-            hitPoints[hitCount].radius = lastRadius * std::sqrt(tempPhotonRatio);
+                float tempPhotonRatio = hitPoints[hitCount].numPhotons/tempPhotonAmount;
+                hitPoints[hitCount].radius = lastRadius * std::sqrt(tempPhotonRatio);
 
-            //flux correction
-            hitPoints[hitCount].color += hitPoints[hitCount].newColor * tempPhotonRatio;
+                //flux correction
+                Color3f averageColor = Color3f(hitPoints[hitCount].newColor.x / hitPoints[hitCount].numNewPhotons,
+                                               hitPoints[hitCount].newColor.y / hitPoints[hitCount].numNewPhotons,
+                                               hitPoints[hitCount].newColor.z / hitPoints[hitCount].numNewPhotons);
+                hitPoints[hitCount].color += hitPoints[hitCount].isec.objectHit->GetMaterial()->GetMaterialKdColor() * averageColor * tempPhotonRatio;
+            }
+
         }
-
         //reinitialize
         hitPoints[hitCount].numNewPhotons = 0;
         hitPoints[hitCount].newColor = Color3f(0.f);
-
-        /*hitPoints[hitCount].numPhotons += hitPoints[hitCount].numNewPhotons;
-        hitPoints[hitCount].color += Color3f(hitPoints[hitCount].newColor.x / hitPoints[hitCount].numNewPhotons,
-                                             hitPoints[hitCount].newColor.y / hitPoints[hitCount].numNewPhotons,
-                                             hitPoints[hitCount].newColor.z / hitPoints[hitCount].numNewPhotons);
-        hitPoints[hitCount].newColor = Color3f(0.0f);
-        hitPoints[hitCount].numNewPhotons = 0;*/
     }
     return;
 }

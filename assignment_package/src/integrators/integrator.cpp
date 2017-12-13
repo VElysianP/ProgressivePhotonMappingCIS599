@@ -269,7 +269,7 @@ void Integrator::ProgressiveRayTracing(Ray cameraRay, const Scene& scene, const 
             if(!isec.ProduceBSDF())
             {
                 PixelHitPoint tempHitPoint;
-//                tempHitPoint.isec = isec;
+                tempHitPoint.isec = isec;
                 tempHitPoint.ray = currentRay;
                 tempHitPoint.color = isec.Le(-currentRay.direction);
                 tempHitPoint.pixel = pixel;
@@ -297,8 +297,7 @@ void Integrator::ProgressiveRayTracing(Ray cameraRay, const Scene& scene, const 
                     PixelHitPoint tempHitPoint;
                     tempHitPoint.isec = isec;
                     tempHitPoint.ray = currentRay;
-                    //tempHitPoint.color = isec.Le(-currentRay.direction);
-                    tempHitPoint.color = Color3f(1.0,0.0,0.0);
+                    tempHitPoint.color = isec.Le(-currentRay.direction);
                     tempHitPoint.pixel = pixel;
                     tempHitPoint.position = isec.point;
                     progHitPoint.push_back(tempHitPoint);
