@@ -79,6 +79,9 @@ Then photons will be shot into the scene.
 
 Until:
 
+200,000 photons with 4 traces 
+
+![enter image description here](https://lh3.googleusercontent.com/-eNuBVAwv7zw/WjMO86iLstI/AAAAAAAABWA/KYxRhTCrhOQWI9goVCUO-3meBo1xykZBACLcBGAs/s0/4-200000.png "4-200000.png")
 
 
 ### **Future Improvement**
