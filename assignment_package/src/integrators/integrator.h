@@ -48,6 +48,7 @@ public:
 
     //specially for Progressive Photon Mapping
     void ProgressiveRayTracing(Ray cameraRay, const Scene& scene, const Point2i pixel, std::shared_ptr<Sampler> sampler, const int depth, QList<PixelHitPoint> &progHitPoint);
+    void DirectLightingTraceForProPhotonMapping(const Scene& scene, std::shared_ptr<Sampler> sampler, PixelHitPoint& hitPoint);
     void ProgressiveKdTree(ProgressiveKdNode *root, PixelHitPoint hitPoint, int linearIndex);
     virtual void TraceProgressivePhotons(const Scene& scene, ProgressiveKdNode* root,std::shared_ptr<Sampler> sampler, int depth, int numPhotons, QList<PixelHitPoint>& hitPoints);
 
@@ -71,7 +72,7 @@ protected:
     Bounds2i bounds;                  // The min and max bounds of the film to which this thread renders
     int recursionLimit;
 
-    const int totalNumPhoton = 500000;
-    const int traceTimes = 5;
+    const int totalNumPhoton = 200000;
+    const int traceTimes = 4;
 
 };

@@ -25,6 +25,9 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
         //the value of depth equals to the recursion limit
         while(traceNum < depth)
         {
+            traceNum++;
+            //to make the photon tracing more realistic
+            //the first tracing was done by naive direct lighting
             Vector3f woW = -tempRay.direction;
             Vector3f wiW;
             float currentPdf;
@@ -37,19 +40,27 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
                 //throw the photon away
                 //basically the photon will not hit the chosen light source itself
                 if(!isec.ProduceBSDF())
-                {
+                {               
                     break;
                 }
+
                 Color3f fColor = isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&currentPdf,BSDF_ALL,&typeBxdf);
                 //the photon meets specular bounce
                 if((typeBxdf&BSDF_SPECULAR)!=0)
                 {
                     currentColor = currentColor * fColor * AbsDot(wiW,isec.bsdf->normal);
-                    tempRay = Ray(isec.point,wiW);
+                    tempRay = isec.SpawnRay(wiW);
+                    continue;
                 }
                 //the photon meet non-specular bounce
                 else
                 {
+                    tempRay = isec.SpawnRay(wiW);
+                    currentColor = currentColor * fColor * AbsDot(wiW,isec.bsdf->normal);
+                    if(traceNum == 1)
+                    {
+                        continue;
+                    }
                     //find the nearest hitpoint
                     //rewrite the newColor of hitpoint
                     //add up the numNewPhotons amount
@@ -62,16 +73,15 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
                     //int foundPhotons = 0;
                     if(nearHitPointIndex != -1)
                     {
-                        currentColor = currentColor * fColor * AbsDot(wiW,isec.bsdf->normal);
                         hitPoints[nearHitPointIndex].newColor += currentColor;
                         hitPoints[nearHitPointIndex].numNewPhotons += 1;
                         //foundPhotons++;
 
-                        tempRay = Ray(isec.point,wiW);
                     }
                     //if there is not proper hitpoint near the photon
                     //just throw away this photon
                 }
+
                 //Russian Roulette
                 float uniformRandom = sampler->Get1D();
                 float maxInThroughput = std::max(std::max(currentColor.x,currentColor.y),currentColor.z);
@@ -83,7 +93,6 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
                     }
                 }
             }
-            traceNum++;
         }
     }
 
@@ -93,11 +102,11 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
     //correct the color for this hit point
     for(int hitCount = 0;hitCount < hitPoints.size();hitCount++)
     {
-
         //which means this hitPoint hits the light source
         //go to the next hitpoint
         if(!hitPoints[hitCount].isec.ProduceBSDF())
         {
+            hitPoints[hitCount].indirectColor = Color3f(1.0f);
             break;
         }
         //which means the first photon trace
@@ -107,8 +116,7 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
             {
             hitPoints[hitCount].numPhotons += hitPoints[hitCount].numNewPhotons;
 
-            hitPoints[hitCount].color = hitPoints[hitCount].isec.objectHit->GetMaterial()->GetMaterialKdColor() *
-                                        Color3f(hitPoints[hitCount].newColor.x / hitPoints[hitCount].numNewPhotons,
+            hitPoints[hitCount].indirectColor = Color3f(hitPoints[hitCount].newColor.x / hitPoints[hitCount].numNewPhotons,
                                                 hitPoints[hitCount].newColor.y / hitPoints[hitCount].numNewPhotons,
                                                 hitPoints[hitCount].newColor.z / hitPoints[hitCount].numNewPhotons);
             hitPoints[hitCount].density = hitPoints[hitCount].numPhotons/(Pi * std::pow(hitPoints[hitCount].radius,2));
@@ -128,11 +136,10 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
                 hitPoints[hitCount].radius = lastRadius * std::sqrt(tempPhotonRatio);
 
                 //flux correction
-                Color3f averageColor = hitPoints[hitCount].isec.objectHit->GetMaterial()->GetMaterialKdColor() *
-                                       Color3f(hitPoints[hitCount].newColor.x / hitPoints[hitCount].numNewPhotons,
+                Color3f averageColor = Color3f(hitPoints[hitCount].newColor.x / hitPoints[hitCount].numNewPhotons,
                                                hitPoints[hitCount].newColor.y / hitPoints[hitCount].numNewPhotons,
                                                hitPoints[hitCount].newColor.z / hitPoints[hitCount].numNewPhotons);
-                hitPoints[hitCount].color += averageColor * tempPhotonRatio;
+                hitPoints[hitCount].indirectColor += averageColor * tempPhotonRatio;
             }
 
         }

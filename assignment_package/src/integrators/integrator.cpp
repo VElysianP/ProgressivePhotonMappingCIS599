@@ -30,6 +30,7 @@ void Integrator::Render()
         //Ray ray = realCamera->Raycast(pix,sampler);
         ProgressiveRayTracing(ray, *scene, pix, sampler,recursionLimit, progHitPoint);
         rootProg = rootProg->InsertProgressiveKdTree(rootProg,progHitPoint[indexCount],indexCount);
+        DirectLightingTraceForProPhotonMapping(*scene,sampler,progHitPoint[indexCount]);
         indexCount++;
     }
     //**************************************end of progressive photon mapping *******************
@@ -105,12 +106,12 @@ void Integrator::Render()
     for(int trace = 0;trace<traceTimes;trace++)
     {
         int photonsToTrace = ceil(totalNumPhoton / traceTimes);
-        //TraceProgressivePhotons(*scene, rootProg, sampler, recursionLimit, photonsToTrace, progHitPoint);
+        TraceProgressivePhotons(*scene, rootProg, sampler, recursionLimit, photonsToTrace, progHitPoint);
 
         for(int index = 0;index <tilePixels.size();index++)
         {
             //int pixelIndex = px.x + camera->height * px.y;
-            Color3f pixelColor = progHitPoint[index].color;
+            Color3f pixelColor = progHitPoint[index].color + progHitPoint[index].indirectColor;
             Point2i pixelNum = progHitPoint[index].pixel;
             film->SetPixelColor(pixelNum, glm::clamp(pixelColor, 0.f, 1.f));
         }
@@ -249,6 +250,71 @@ void Integrator::cachePhotonColor(const Ray &r, const Scene &scene, int depth, c
     }
 
 }
+
+//for progressive photon mapping only
+//this function works as a trace of direct lighting integrator
+void Integrator::DirectLightingTraceForProPhotonMapping(const Scene& scene, std::shared_ptr<Sampler> sampler, PixelHitPoint& hitPoint)
+{
+    //if the hitpoint hits nothing
+    //also do nothing
+    if(hitPoint.position == Point3f((float)-INFINITY))
+    {
+        return;
+    }
+    //if the hitpoint we are processing hits the light source
+    //do nothing to this hitpoint
+    else if(!hitPoint.isec.ProduceBSDF())
+    {
+        return;
+    }
+    //process all the other situations
+    else
+    {
+        Color3f totalColor;
+        Vector3f woW = -hitPoint.ray.direction;
+        Vector3f wiW;
+        Color3f leColor = hitPoint.isec.Le(woW);
+        float currentPdf;
+        float materialPdf;
+        BxDFType typebxdf;
+        int lightNum = std::floor(sampler->Get1D()*scene.lights.size());
+        Color3f liColor = scene.lights[lightNum]->Sample_Li(hitPoint.isec,sampler->Get2D(),&wiW, &currentPdf);
+
+        Color3f fColor = hitPoint.isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&materialPdf,BSDF_ALL,&typebxdf);
+
+        if((typebxdf & BSDF_SPECULAR)!=0)
+        {
+            return;
+        }
+        Ray shadowTestRay = hitPoint.isec.SpawnRay(wiW);
+        Intersection shadowIntersection = Intersection();
+
+        if(scene.Intersect(shadowTestRay,&shadowIntersection))
+        {
+            //***********************************light and arealight
+            if((shadowIntersection.objectHit->GetLight()==nullptr)||(shadowIntersection.objectHit->GetLight()->name!=scene.lights[lightNum]->name))
+            {
+                totalColor = leColor;
+                hitPoint.color *= totalColor;
+                return;
+            }
+        }
+
+        if(currentPdf == 0)
+        {
+            totalColor = leColor;
+        }
+        else
+        {
+            currentPdf = currentPdf /scene.lights.size();
+            totalColor = leColor + fColor * liColor * AbsDot(wiW,hitPoint.isec.normalGeometric) / currentPdf;
+        }
+
+        hitPoint.color *= totalColor;
+        return;
+    }
+}
+
 
 
 //for progressive photon mapping
