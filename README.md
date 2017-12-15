@@ -83,6 +83,10 @@ Until:
 
 ![enter image description here](https://lh3.googleusercontent.com/-eNuBVAwv7zw/WjMO86iLstI/AAAAAAAABWA/KYxRhTCrhOQWI9goVCUO-3meBo1xykZBACLcBGAs/s0/4-200000.png "4-200000.png")
 
+1 million photons with 10 traces
+
+![enter image description here](https://lh3.googleusercontent.com/-BIvWJR3jpK4/WjNKIDIG5OI/AAAAAAAABWk/GODoUjhVPpoMglGsGIWLMazFbrWhMdAWACLcBGAs/s0/1million_10.png "1million_10.png")
+
 
 ### **Future Improvement**
 
