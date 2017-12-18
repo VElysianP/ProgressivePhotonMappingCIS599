@@ -296,6 +296,7 @@ void Integrator::DirectLightingTraceForProPhotonMapping(const Scene& scene, std:
 
         if((typebxdf & BSDF_SPECULAR)!=0)
         {
+            totalColor = Color3f(1.0f);
             return;
         }
         Ray shadowTestRay = hitPoint.isec.SpawnRay(wiW);
