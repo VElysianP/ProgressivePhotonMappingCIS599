@@ -87,6 +87,16 @@ Until:
 
 ![enter image description here](https://lh3.googleusercontent.com/-BIvWJR3jpK4/WjNKIDIG5OI/AAAAAAAABWk/GODoUjhVPpoMglGsGIWLMazFbrWhMdAWACLcBGAs/s0/1million_10.png "1million_10.png")
 
+After some improvement of direct lighting (sampling direct lighting for 100 times and average the result of direct lighting), the direct lighting map looks like:
+
+![enter image description here](https://lh3.googleusercontent.com/-3NZP_HxFZ3g/Wjc5cKVXcVI/AAAAAAAABYw/Edz3h96e9KI_0Y9HVMCJghYSjQ3bp08ewCLcBGAs/s0/rendered_images26.png "rendered_images26.png")
+
+And 1 million photons with 10 traces
+
+![enter image description here](https://lh3.googleusercontent.com/-BZVzKkP9cDU/Wjc4eIt3luI/AAAAAAAABYg/GsAKUpDiQnk0xYKofNrQffhMhZYPfV4wQCLcBGAs/s0/rendered_images25.png "rendered_images25.png")
+
+Still very sparse with bugs?????? Why? 
+
 
 ### **Future Improvement**
 
@@ -111,6 +121,10 @@ As mentioned above, the searching radius should be carefully decided. Currently,
 #### 5. Photon Reusing 
 
 There are a lot of wasted photons inside the scene, which may take extra rendering time if higher resolution is needed. Therefore, there should be some better strategy to recycle the photons. 
+
+#### 6. What makes the rendered image so sparse?
+
+Have to figure out this problem.
 
 ### **Credit To:** 
 Basecode: University of Pennsylvania, CIS561 2017 Spring 
