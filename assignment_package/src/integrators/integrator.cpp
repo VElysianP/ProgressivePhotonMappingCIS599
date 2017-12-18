@@ -30,7 +30,20 @@ void Integrator::Render()
         //Ray ray = realCamera->Raycast(pix,sampler);
         ProgressiveRayTracing(ray, *scene, pix, sampler,recursionLimit, progHitPoint);
         rootProg = rootProg->InsertProgressiveKdTree(rootProg,progHitPoint[indexCount],indexCount);
-        DirectLightingTraceForProPhotonMapping(*scene,sampler,progHitPoint[indexCount]);
+        Color3f totalColor = Color3f(0.0f);
+        std::vector<Point2f> pixelSamples = sampler->GenerateStratifiedSamples();
+        for(Point2f sample : pixelSamples)
+        {
+            Color3f currentColor;
+            DirectLightingTraceForProPhotonMapping(*scene,sampler,progHitPoint[indexCount],currentColor);
+            totalColor += currentColor;
+        }
+        totalColor = Color3f(totalColor.x / pixelSamples.size(), totalColor.y / pixelSamples.size(),
+                             totalColor.z / pixelSamples.size());
+        if(progHitPoint[indexCount].isec.ProduceBSDF())
+        {
+            progHitPoint[indexCount].color *= totalColor;
+        }
         indexCount++;
     }
     //**************************************end of progressive photon mapping *******************
@@ -106,7 +119,7 @@ void Integrator::Render()
     for(int trace = 0;trace<traceTimes;trace++)
     {
         int photonsToTrace = ceil(totalNumPhoton / traceTimes);
-        TraceProgressivePhotons(*scene, rootProg, sampler, recursionLimit, photonsToTrace, progHitPoint);
+        //TraceProgressivePhotons(*scene, rootProg, sampler, recursionLimit, photonsToTrace, progHitPoint);
 
         for(int index = 0;index <tilePixels.size();index++)
         {
@@ -253,7 +266,7 @@ void Integrator::cachePhotonColor(const Ray &r, const Scene &scene, int depth, c
 
 //for progressive photon mapping only
 //this function works as a trace of direct lighting integrator
-void Integrator::DirectLightingTraceForProPhotonMapping(const Scene& scene, std::shared_ptr<Sampler> sampler, PixelHitPoint& hitPoint)
+void Integrator::DirectLightingTraceForProPhotonMapping(const Scene& scene, std::shared_ptr<Sampler> sampler, PixelHitPoint& hitPoint, Color3f& totalColor)
 {
     //if the hitpoint hits nothing
     //also do nothing
@@ -270,7 +283,6 @@ void Integrator::DirectLightingTraceForProPhotonMapping(const Scene& scene, std:
     //process all the other situations
     else
     {
-        Color3f totalColor;
         Vector3f woW = -hitPoint.ray.direction;
         Vector3f wiW;
         Color3f leColor = hitPoint.isec.Le(woW);
@@ -295,7 +307,6 @@ void Integrator::DirectLightingTraceForProPhotonMapping(const Scene& scene, std:
             if((shadowIntersection.objectHit->GetLight()==nullptr)||(shadowIntersection.objectHit->GetLight()->name!=scene.lights[lightNum]->name))
             {
                 totalColor = leColor;
-                hitPoint.color *= totalColor;
                 return;
             }
         }
@@ -309,8 +320,6 @@ void Integrator::DirectLightingTraceForProPhotonMapping(const Scene& scene, std:
             currentPdf = currentPdf /scene.lights.size();
             totalColor = leColor + fColor * liColor * AbsDot(wiW,hitPoint.isec.normalGeometric) / currentPdf;
         }
-
-        hitPoint.color *= totalColor;
         return;
     }
 }
