@@ -20,7 +20,7 @@ struct PixelHitPoint{
     Color3f color;//the color to color the exact pixel finally
     Color3f newColor = Color3f(0.0f);//the tempColor storage for flux correction
     Color3f indirectColor = Color3f(0.0f);
-    float radius = 0.375f;// the radius that we will check for the final color result
+    float radius = 0.6f;// the radius that we will check for the final color result
     float density = 1.0f; //for shrinking the radius for better results
 //    Spectrum spec;
 //    float intensity;

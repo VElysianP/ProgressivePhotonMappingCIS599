@@ -73,6 +73,6 @@ protected:
     int recursionLimit;
 
     const int totalNumPhoton = 1000000;
-    const int traceTimes = 10;
+    const int traceTimes = 5;
 
 };

@@ -12,7 +12,7 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
 {
     //this value functions as shrinking the radius
     //somehow needs to change based on our need
-    float alpha = 0.6;
+    float alpha = 0.8;
     for(int count = 0;count<numPhotons;count++)
     {
         int chosenLightNum = std::floor(sampler->Get1D()*scene.lights.size());
@@ -61,25 +61,29 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
                     {
                         continue;
                     }
+
+                    UpdateHitPoints(hitPoints,isec.point,currentColor);
+                    //********************************** the kdtree method****************************
                     //find the nearest hitpoint
                     //rewrite the newColor of hitpoint
                     //add up the numNewPhotons amount
                     //
-                    int nearHitPointIndex = root->NearHitPointProg(isec.point,root);
+                    //int nearHitPointIndex = root->NearHitPointProg(isec.point,root);
 
                     //which means that there exists photon that has proper distance to a hitpoint
                     //and this is the index of the proper hitpoint
                     //add up the color of the hitpoint and then update the datas of this hitpoint
                     //int foundPhotons = 0;
-                    if(nearHitPointIndex != -1)
-                    {
-                        hitPoints[nearHitPointIndex].newColor += currentColor;
-                        hitPoints[nearHitPointIndex].numNewPhotons += 1;
+                    //if(nearHitPointIndex != -1)
+                    //{
+                        //hitPoints[nearHitPointIndex].newColor += currentColor;
+                        //hitPoints[nearHitPointIndex].numNewPhotons += 1;
                         //foundPhotons++;
 
-                    }
+                    //}
                     //if there is not proper hitpoint near the photon
                     //just throw away this photon
+                    //******************************************end of kdtree******************************
                 }
 
                 //Russian Roulette
@@ -102,6 +106,10 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
     //correct the color for this hit point
     for(int hitCount = 0;hitCount < hitPoints.size();hitCount++)
     {
+        if((hitPoints[hitCount].pixel.x == 194)||(hitPoints[hitCount].pixel.y == 12))
+        {
+            break;
+        }
         //which means this hitPoint hits the light source
         //go to the next hitpoint
         if(!hitPoints[hitCount].isec.ProduceBSDF())
@@ -150,5 +158,25 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
     return;
 }
 
+void ProgressivePhotonMapping::UpdateHitPoints(QList<PixelHitPoint>& hitPoints,Point3f position,Color3f currentColor)
+{
+    int loopSize = hitPoints.size();
+    //loop through all the hitpoints inside this scene and find all the hitpoints that
+    //its radius can cover the photon
+    //although this method could be extremely slow
+    //but it is accurate
+    for(int i = 0;i<loopSize;i++)
+    {
+        Point3f  hitPointPos = hitPoints[i].position;
+        //for every hitPoint, if the photon has the possibility that its color will
+        //influnce the final color
+        //we should write the color into the hitPoint
+        if(glm::length(hitPointPos - position) <= hitPoints[i].radius)
+        {
+            hitPoints[i].newColor += currentColor;
+            hitPoints[i].numNewPhotons ++;
+        }
+    }
+}
 
 

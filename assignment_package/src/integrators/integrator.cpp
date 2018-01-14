@@ -29,7 +29,7 @@ void Integrator::Render()
         Ray ray = camera->Raycast(pix);
         //Ray ray = realCamera->Raycast(pix,sampler);
         ProgressiveRayTracing(ray, *scene, pix, sampler,recursionLimit, progHitPoint);
-        rootProg = rootProg->InsertProgressiveKdTree(rootProg,progHitPoint[indexCount],indexCount);
+        //rootProg = rootProg->InsertProgressiveKdTree(rootProg,progHitPoint[indexCount],indexCount);
         Color3f totalColor = Color3f(0.0f);
         std::vector<Point2f> pixelSamples = sampler->GenerateStratifiedSamples();
         for(Point2f sample : pixelSamples)
@@ -119,7 +119,7 @@ void Integrator::Render()
     for(int trace = 0;trace<traceTimes;trace++)
     {
         int photonsToTrace = ceil(totalNumPhoton / traceTimes);
-        //TraceProgressivePhotons(*scene, rootProg, sampler, recursionLimit, photonsToTrace, progHitPoint);
+        TraceProgressivePhotons(*scene, rootProg, sampler, recursionLimit, photonsToTrace, progHitPoint);
 
         for(int index = 0;index <tilePixels.size();index++)
         {
@@ -129,7 +129,7 @@ void Integrator::Render()
             film->SetPixelColor(pixelNum, glm::clamp(pixelColor, 0.f, 1.f));
         }
     }
-    rootProg->TreeDeleteProg(rootProg);
+    //rootProg->TreeDeleteProg(rootProg);
     //*************************************End of Progressive Photon Mapping***********************************
 }
 
