@@ -63,14 +63,14 @@ Ray DiffuseAreaLight::EmitSampleLight(std::shared_ptr<Sampler> sampler) const
     sampler->Clone(seed);
     Point2f sampleRayOut = sampler->Get2D();
     Point3f pointOnLightBefore;
-//    if(twoSided)
-//    {
-//        pointOnLightBefore = WarpFunctions::squareToSphereUniform(sampleRayOut);
-//    }
-//    else
-//    {
+    //if(twoSided)
+    //{
+      //  pointOnLightBefore = WarpFunctions::squareToSphereUniform(sampleRayOut);
+    //}
+    //else
+    //{
         pointOnLightBefore = WarpFunctions::squareToHemisphereCosine(sampleRayOut);
-//    }
+    //}
 
     Point3f pointRayOut = Point3f(transform.T()*glm::vec4(pointOnLightBefore.x,pointOnLightBefore.y,pointOnLightBefore.z,1.0f));
 

@@ -14,6 +14,8 @@ public:
 
     void UpdateHitPoints(QList<PixelHitPoint>& hitPoints,Point3f position,Color3f currentColor);
 
+    void PhotonFinalGathering(QList<PixelHitPoint>& hitPoints, float alpha);
+
     virtual Color3f Li(const Ray& ray, const Scene& scene, std::shared_ptr<Sampler> sampler, int depth, Color3f throughputColor,KdTree tree) const;
 
     virtual void TraceProgressivePhotons(const Scene& scene, ProgressiveKdNode* root,std::shared_ptr<Sampler> sampler, int depth, int numPhotons, QList<PixelHitPoint>& hitPoints);

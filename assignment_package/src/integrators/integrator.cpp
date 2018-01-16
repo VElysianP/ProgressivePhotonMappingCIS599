@@ -27,6 +27,10 @@ void Integrator::Render()
     for(Point2i pix :tilePixels)
     {
         Ray ray = camera->Raycast(pix);
+//        if((pix.x == 193)&&(pix.y ==12))
+//        {
+//            Point2f temppix = pix;
+//        }
         //Ray ray = realCamera->Raycast(pix,sampler);
         ProgressiveRayTracing(ray, *scene, pix, sampler,recursionLimit, progHitPoint);
         //rootProg = rootProg->InsertProgressiveKdTree(rootProg,progHitPoint[indexCount],indexCount);
@@ -124,8 +128,18 @@ void Integrator::Render()
         for(int index = 0;index <tilePixels.size();index++)
         {
             //int pixelIndex = px.x + camera->height * px.y;
+            //PixelHitPoint tempHit;
+//            if((progHitPoint[index].pixel.x == 193)&&(progHitPoint[index].pixel.y ==12))
+//            {
+//               tempHit = progHitPoint[index];
+//            }
             Color3f pixelColor = progHitPoint[index].color + progHitPoint[index].indirectColor;
             Point2i pixelNum = progHitPoint[index].pixel;
+//            if((progHitPoint[index].pixel.x == 193)&&(progHitPoint[index].pixel.y == 13))
+//            {
+//                PixelHitPoint tempHit = progHitPoint[index];
+//                getchar();
+//            }
             film->SetPixelColor(pixelNum, glm::clamp(pixelColor, 0.f, 1.f));
         }
     }
@@ -268,6 +282,10 @@ void Integrator::cachePhotonColor(const Ray &r, const Scene &scene, int depth, c
 //this function works as a trace of direct lighting integrator
 void Integrator::DirectLightingTraceForProPhotonMapping(const Scene& scene, std::shared_ptr<Sampler> sampler, PixelHitPoint& hitPoint, Color3f& totalColor)
 {
+    if((hitPoint.pixel.x == 185)&&(hitPoint.pixel.y == 14))
+    {
+        Point2i tempPix = hitPoint.pixel;
+    }
     //if the hitpoint hits nothing
     //also do nothing
     if(hitPoint.position == Point3f((float)-INFINITY))
@@ -294,11 +312,11 @@ void Integrator::DirectLightingTraceForProPhotonMapping(const Scene& scene, std:
 
         Color3f fColor = hitPoint.isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&materialPdf,BSDF_ALL,&typebxdf);
 
-        if((typebxdf & BSDF_SPECULAR)!=0)
-        {
-            totalColor = Color3f(1.0f);
-            return;
-        }
+        //if((typebxdf & BSDF_SPECULAR)!=0)
+        //{
+            //totalColor = Color3f(1.0f);
+            //return;
+        //}
         Ray shadowTestRay = hitPoint.isec.SpawnRay(wiW);
         Intersection shadowIntersection = Intersection();
 
@@ -314,7 +332,7 @@ void Integrator::DirectLightingTraceForProPhotonMapping(const Scene& scene, std:
 
         if(currentPdf == 0)
         {
-            totalColor = leColor;
+            totalColor = Color3f(1.0f);
         }
         else
         {
@@ -338,6 +356,10 @@ void Integrator::ProgressiveRayTracing(Ray cameraRay, const Scene& scene, const 
     int dep = 0;
     Color3f finalColor = Color3f(1.0f);
 
+//    if((pixel.x ==193)&&(pixel.y == 12))
+//    {
+//        getchar();
+//    }
     //shoot ray into the scene
     while(dep < depth)
     {
@@ -366,7 +388,7 @@ void Integrator::ProgressiveRayTracing(Ray cameraRay, const Scene& scene, const 
                 Color3f fColor = isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&currentPdf,BSDF_ALL,&typeBxdf);
 
                 //specular bounce
-                if((typeBxdf & BSDF_SPECULAR)!=0)
+                if(currentPdf == 0.f)
                 {
                     dep++;
                     finalColor = finalColor * fColor;

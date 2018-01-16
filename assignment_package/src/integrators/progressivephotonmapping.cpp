@@ -12,15 +12,27 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
 {
     //this value functions as shrinking the radius
     //somehow needs to change based on our need
-    float alpha = 0.8;
+    float alpha = 0.6;
+//    for(int i = 0; i< hitPoints.size();i++)
+//    {
+//        if((hitPoints[i].pixel.x == 193)&&(hitPoints[i].pixel.y == 12))
+//        {
+//            int h = 0;
+//        }
+//    }
     for(int count = 0;count<numPhotons;count++)
     {
         int chosenLightNum = std::floor(sampler->Get1D()*scene.lights.size());
         Ray tempRay = scene.lights[chosenLightNum]->EmitSampleLight(sampler);
+        tempRay.origin = tempRay.origin + RayEpsilon * tempRay.direction;
         Intersection isec = Intersection();
         BxDFType typeBxdf;
         Color3f currentColor = scene.lights[chosenLightNum]->emittedLight;
         int traceNum = 0;
+
+        Vector3f woW = -tempRay.direction;
+        Vector3f wiW;
+        float currentPdf;
 
         //the value of depth equals to the recursion limit
         while(traceNum < depth)
@@ -28,9 +40,6 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
             traceNum++;
             //to make the photon tracing more realistic
             //the first tracing was done by naive direct lighting
-            Vector3f woW = -tempRay.direction;
-            Vector3f wiW;
-            float currentPdf;
 
             //if the photon does not hit anything
             //just throw it away
@@ -40,21 +49,20 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
                 //throw the photon away
                 //basically the photon will not hit the chosen light source itself
                 if(!isec.ProduceBSDF())
-                {               
+                {
                     break;
                 }
 
                 Color3f fColor = isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&currentPdf,BSDF_ALL,&typeBxdf);
                 //the photon meets specular bounce
-                if((typeBxdf&BSDF_SPECULAR)!=0)
-                {
-                    currentColor = currentColor * fColor * AbsDot(wiW,isec.bsdf->normal);
-                    tempRay = isec.SpawnRay(wiW);
-                    continue;
-                }
+                //if((typeBxdf&BSDF_SPECULAR)!=0)
+                //{
+                   // currentColor = currentColor * fColor * AbsDot(wiW,isec.bsdf->normal);
+                    //tempRay = isec.SpawnRay(wiW);
+                //}
                 //the photon meet non-specular bounce
-                else
-                {
+                //else
+                //{
                     tempRay = isec.SpawnRay(wiW);
                     currentColor = currentColor * fColor * AbsDot(wiW,isec.bsdf->normal);
                     if(traceNum == 1)
@@ -63,6 +71,7 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
                     }
 
                     UpdateHitPoints(hitPoints,isec.point,currentColor);
+                    //break;
                     //********************************** the kdtree method****************************
                     //find the nearest hitpoint
                     //rewrite the newColor of hitpoint
@@ -84,7 +93,7 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
                     //if there is not proper hitpoint near the photon
                     //just throw away this photon
                     //******************************************end of kdtree******************************
-                }
+                //}
 
                 //Russian Roulette
                 float uniformRandom = sampler->Get1D();
@@ -97,64 +106,15 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
                     }
                 }
             }
-        }
-    }
-
-
-    //change the density and the radius
-    //recalculate the hitpoint parameters
-    //correct the color for this hit point
-    for(int hitCount = 0;hitCount < hitPoints.size();hitCount++)
-    {
-        if((hitPoints[hitCount].pixel.x == 194)||(hitPoints[hitCount].pixel.y == 12))
-        {
-            break;
-        }
-        //which means this hitPoint hits the light source
-        //go to the next hitpoint
-        if(!hitPoints[hitCount].isec.ProduceBSDF())
-        {
-            hitPoints[hitCount].indirectColor = Color3f(1.0f);
-            break;
-        }
-        //which means the first photon trace
-        if(hitPoints[hitCount].numPhotons == 0)
-        {
-            if(hitPoints[hitCount].numNewPhotons!=0)
+            //if the photon does not hit anything just step out the loop
+            else
             {
-            hitPoints[hitCount].numPhotons += hitPoints[hitCount].numNewPhotons;
-
-            hitPoints[hitCount].indirectColor = Color3f(hitPoints[hitCount].newColor.x / hitPoints[hitCount].numNewPhotons,
-                                                hitPoints[hitCount].newColor.y / hitPoints[hitCount].numNewPhotons,
-                                                hitPoints[hitCount].newColor.z / hitPoints[hitCount].numNewPhotons);
-            hitPoints[hitCount].density = hitPoints[hitCount].numPhotons/(Pi * std::pow(hitPoints[hitCount].radius,2));
+                break;
             }
         }
-        //more than 1 photon traces
-        else
-        {
-            if(hitPoints[hitCount].numNewPhotons!=0)
-            {
-                //radius shrinking
-                float lastRadius = hitPoints[hitCount].radius;
-                int tempPhotonAmount = hitPoints[hitCount].numNewPhotons + hitPoints[hitCount].numPhotons;
-                hitPoints[hitCount].numPhotons += std::floor(hitPoints[hitCount].numNewPhotons * alpha);
-
-                float tempPhotonRatio = hitPoints[hitCount].numPhotons/tempPhotonAmount;
-                hitPoints[hitCount].radius = lastRadius * std::sqrt(tempPhotonRatio);
-
-                //flux correction
-                Color3f averageColor = Color3f(hitPoints[hitCount].newColor.x / hitPoints[hitCount].numNewPhotons,
-                                               hitPoints[hitCount].newColor.y / hitPoints[hitCount].numNewPhotons,
-                                               hitPoints[hitCount].newColor.z / hitPoints[hitCount].numNewPhotons);
-                hitPoints[hitCount].indirectColor += averageColor * tempPhotonRatio;
-            }
-
-        }
-        //reinitialize
-        hitPoints[hitCount].numNewPhotons = 0;
-        hitPoints[hitCount].newColor = Color3f(0.f);
     }
+    PhotonFinalGathering(hitPoints,alpha);
+
     return;
 }
 
@@ -179,4 +139,61 @@ void ProgressivePhotonMapping::UpdateHitPoints(QList<PixelHitPoint>& hitPoints,P
     }
 }
 
+void ProgressivePhotonMapping::PhotonFinalGathering(QList<PixelHitPoint>& hitPoints,float alpha)
+{
+    //change the density and the radius
+    //recalculate the hitpoint parameters
+    //correct the color for this hit point
+    for(int hitCount = 0;hitCount < hitPoints.size();hitCount++)
+    {
+//        PixelHitPoint tempHit;
+//        if((hitPoints[hitCount].pixel.x == 193)&&(hitPoints[hitCount].pixel.y == 12))
+//        {
+//            //break;
+//             tempHit = hitPoints[hitCount];
+//        }
+        //which means this hitPoint hits the light source
+        //go to the next hitpoint
+        if(hitPoints[hitCount].isec.ProduceBSDF())
+        {
+            //which means the first photon trace
+            if(hitPoints[hitCount].numPhotons == 0)
+            {
+                if(hitPoints[hitCount].numNewPhotons!=0)
+                {
+                hitPoints[hitCount].numPhotons += hitPoints[hitCount].numNewPhotons;
 
+                hitPoints[hitCount].indirectColor = Color3f(hitPoints[hitCount].newColor.x / hitPoints[hitCount].numNewPhotons,
+                                                    hitPoints[hitCount].newColor.y / hitPoints[hitCount].numNewPhotons,
+                                                    hitPoints[hitCount].newColor.z / hitPoints[hitCount].numNewPhotons);
+                hitPoints[hitCount].density = hitPoints[hitCount].numPhotons/(Pi * std::pow(hitPoints[hitCount].radius,2));
+                }
+            }
+            //more than 1 photon traces
+            else
+            {
+                if(hitPoints[hitCount].numNewPhotons!=0)
+                {
+                    //radius shrinking
+                    float lastRadius = hitPoints[hitCount].radius;
+                    int tempPhotonAmount = hitPoints[hitCount].numNewPhotons + hitPoints[hitCount].numPhotons;
+                    hitPoints[hitCount].numPhotons += std::floor(hitPoints[hitCount].numNewPhotons * alpha);
+
+                    float tempPhotonRatio = hitPoints[hitCount].numPhotons/tempPhotonAmount;
+                    hitPoints[hitCount].radius = lastRadius * std::sqrt(tempPhotonRatio);
+
+                    //flux correction
+                    Color3f averageColor = Color3f(hitPoints[hitCount].newColor.x / hitPoints[hitCount].numNewPhotons,
+                                                   hitPoints[hitCount].newColor.y / hitPoints[hitCount].numNewPhotons,
+                                                   hitPoints[hitCount].newColor.z / hitPoints[hitCount].numNewPhotons);
+                    hitPoints[hitCount].indirectColor += averageColor * tempPhotonRatio;
+                }
+
+            }
+        }
+
+        //reinitialize
+        hitPoints[hitCount].numNewPhotons = 0;
+        hitPoints[hitCount].newColor = Color3f(0.f);
+    }
+}
