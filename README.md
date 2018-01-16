@@ -104,7 +104,7 @@ Still very sparse with bugs?????? Why?
 
 2. Dark areas beside the light source: because of wrong light source judging method in radius shrinking.
 
-#### Revised Rendered Images
+#### Revised Rendered Images of Cornell Box
 
 50,000 Photons with 2 traces alpha = 0.6 radius = 0.8
 
@@ -118,6 +118,8 @@ Still very sparse with bugs?????? Why?
 (rendering time 8.2 h)
 
 ![enter image description here](https://lh3.googleusercontent.com/-SB7J-edyG00/Wl4YRR7hWfI/AAAAAAAABcE/nC9KMiVVjd4Avw5qJJO1MD6dsUUv8yyGgCLcBGAs/s0/rendered_images49.png "rendered_images49.png")
+
+#### Revised Rendered Images of Glass Ball
 
 ### **Future Improvement**
 
