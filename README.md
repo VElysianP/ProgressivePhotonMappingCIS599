@@ -1,4 +1,4 @@
-﻿
+
 
 **University of Pennsylvania, CIS 599: Independent Study, Progressive Photon Mapping**
 ======================
@@ -96,6 +96,19 @@ And 1 million photons with 10 traces
 ![enter image description here](https://lh3.googleusercontent.com/-BZVzKkP9cDU/Wjc4eIt3luI/AAAAAAAABYg/GsAKUpDiQnk0xYKofNrQffhMhZYPfV4wQCLcBGAs/s0/rendered_images25.png "rendered_images25.png")
 
 Still very sparse with bugs?????? Why? 
+
+
+#### Solutions 
+
+1. Sparse Rendering Result: because of the kd-tree. Perhaps the kd-tree structure does not suit for Progressive Photon Mapping. Therefore, for the accuracy of the result, the acceleration structure, i.e. the kd-tree structure is removed. To attain better result, for each photon that reaches the destination, loop through all the hitpoints in  the scene and find all the possible hitpoints that this photon will influence and revise the color for this hitpoint. 
+
+2. Dark areas beside the light source: because of wrong light source judging method in radius shrinking.
+
+#### Revised Rendered Images
+
+100,000 Photons with 5 traces
+
+![enter image description here](https://lh3.googleusercontent.com/-3L23b7HZ3T4/Wl2Ogwv6fdI/AAAAAAAABbk/i59xbz_FG5Mg33fplbiwU4OMAXVkIE3xQCLcBGAs/s0/rendered_images48.png "rendered_images48.png")
 
 
 ### **Future Improvement**
