@@ -147,7 +147,7 @@ There are a lot of wasted photons inside the scene, which may take extra renderi
 
 Have to figure out this problem.
 
-### Revision
+### 2018 Jan Revision
 
 #### 1. Kd-tree deleted 
  The kd-tree acceleration structure is deleted because actually a photon is possible to influence more than one hitpoint inside the scene, and therefore kd-tree is not the best data structure to find the possible neighboring hitpoints. 
