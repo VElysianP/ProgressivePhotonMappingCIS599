@@ -106,9 +106,11 @@ Still very sparse with bugs?????? Why?
 
 #### Revised Rendered Images
 
-100,000 Photons with 5 traces
+100,000 Photons with 5 traces alpha = 0.6
 
 ![enter image description here](https://lh3.googleusercontent.com/-3L23b7HZ3T4/Wl2Ogwv6fdI/AAAAAAAABbk/i59xbz_FG5Mg33fplbiwU4OMAXVkIE3xQCLcBGAs/s0/rendered_images48.png "rendered_images48.png")
+
+2,000,000 photons with 10 traces alpha = 0.6
 
 
 ### **Future Improvement**
