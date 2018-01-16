@@ -106,15 +106,15 @@ Still very sparse with bugs?????? Why?
 
 #### Revised Rendered Images
 
-50,000 Photons with 2 traces alpha = 0.6
+50,000 Photons with 2 traces alpha = 0.6 radius = 0.8
 
+![enter image description here](https://lh3.googleusercontent.com/-dWV9UqjkKYs/Wl4cRNr9NtI/AAAAAAAABcU/tnddmRXbSTY56XJqQaH295eJrbXpo4sdwCLcBGAs/s0/rendered_images50.png "rendered_images50.png")
 
-
-100,000 Photons with 5 traces alpha = 0.6
+100,000 Photons with 5 traces alpha = 0.6 radius = 0.6
 
 ![enter image description here](https://lh3.googleusercontent.com/-3L23b7HZ3T4/Wl2Ogwv6fdI/AAAAAAAABbk/i59xbz_FG5Mg33fplbiwU4OMAXVkIE3xQCLcBGAs/s0/rendered_images48.png "rendered_images48.png")
 
-2,000,000 photons with 10 traces alpha = 0.6
+2,000,000 photons with 10 traces alpha = 0.6 radius = 0.8
 (rendering time 8.2 h)
 
 ![enter image description here](https://lh3.googleusercontent.com/-SB7J-edyG00/Wl4YRR7hWfI/AAAAAAAABcE/nC9KMiVVjd4Avw5qJJO1MD6dsUUv8yyGgCLcBGAs/s0/rendered_images49.png "rendered_images49.png")
