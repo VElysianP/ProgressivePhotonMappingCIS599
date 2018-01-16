@@ -147,5 +147,14 @@ There are a lot of wasted photons inside the scene, which may take extra renderi
 
 Have to figure out this problem.
 
+### Revision
+
+#### 1. Kd-tree deleted 
+ The kd-tree acceleration structure is deleted because actually a photon is possible to influence more than one hitpoint inside the scene, and therefore kd-tree is not the best data structure to find the possible neighboring hitpoints. 
+
+#### 2. Light Searching Method in Final Photon Gathering 
+
+Because of wrong judging method after every trace of photon shooting, there is a dark stripe on the ceiling. The problem is fixed in the latest version. 
+
 ### **Credit To:** 
 Basecode: University of Pennsylvania, CIS561 2017 Spring 
