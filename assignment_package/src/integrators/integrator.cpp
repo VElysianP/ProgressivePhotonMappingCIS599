@@ -282,10 +282,10 @@ void Integrator::cachePhotonColor(const Ray &r, const Scene &scene, int depth, c
 //this function works as a trace of direct lighting integrator
 void Integrator::DirectLightingTraceForProPhotonMapping(const Scene& scene, std::shared_ptr<Sampler> sampler, PixelHitPoint& hitPoint, Color3f& totalColor)
 {
-    if((hitPoint.pixel.x == 185)&&(hitPoint.pixel.y == 14))
-    {
-        Point2i tempPix = hitPoint.pixel;
-    }
+//    if((hitPoint.pixel.x == 185)&&(hitPoint.pixel.y == 14))
+//    {
+//        Point2i tempPix = hitPoint.pixel;
+//    }
     //if the hitpoint hits nothing
     //also do nothing
     if(hitPoint.position == Point3f((float)-INFINITY))
@@ -312,11 +312,11 @@ void Integrator::DirectLightingTraceForProPhotonMapping(const Scene& scene, std:
 
         Color3f fColor = hitPoint.isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&materialPdf,BSDF_ALL,&typebxdf);
 
-        //if((typebxdf & BSDF_SPECULAR)!=0)
-        //{
-            //totalColor = Color3f(1.0f);
-            //return;
-        //}
+        if(materialPdf == 0.f)
+        {
+            totalColor = Color3f(1.0f);
+            return;
+        }
         Ray shadowTestRay = hitPoint.isec.SpawnRay(wiW);
         Intersection shadowIntersection = Intersection();
 

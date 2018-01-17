@@ -30,7 +30,7 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
         Color3f currentColor = scene.lights[chosenLightNum]->emittedLight;
         int traceNum = 0;
 
-        Vector3f woW = -tempRay.direction;
+        Vector3f woW;
         Vector3f wiW;
         float currentPdf;
 
@@ -38,6 +38,7 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
         while(traceNum < depth)
         {
             traceNum++;
+            woW = -tempRay.direction;
             //to make the photon tracing more realistic
             //the first tracing was done by naive direct lighting
 
@@ -64,7 +65,11 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
                 //else
                 //{
                     tempRay = isec.SpawnRay(wiW);
-                    currentColor = currentColor * fColor * AbsDot(wiW,isec.bsdf->normal);
+                    //if(currentPdf != 0.f)
+                    //{
+                        currentColor = currentColor * fColor * AbsDot(wiW,isec.bsdf->normal);
+                    //}
+
                     if(traceNum == 1)
                     {
                         continue;
@@ -113,6 +118,7 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
             }
         }
     }
+
     PhotonFinalGathering(hitPoints,alpha);
 
     return;

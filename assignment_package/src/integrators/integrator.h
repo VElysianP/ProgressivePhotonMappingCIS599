@@ -72,7 +72,7 @@ protected:
     Bounds2i bounds;                  // The min and max bounds of the film to which this thread renders
     int recursionLimit;
 
-    const int totalNumPhoton = 100000;
-    const int traceTimes = 5;
+    const int totalNumPhoton = 2000000;
+    const int traceTimes = 10;
 
 };
