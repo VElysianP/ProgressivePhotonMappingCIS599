@@ -114,11 +114,9 @@ Still very sparse with bugs?????? Why?
 
 ![enter image description here](https://lh3.googleusercontent.com/-ObwlKmLlGus/Wl56tiuogMI/AAAAAAAABdM/Ef7xL6JUOHQyOws3r1oRQZwuFz0Y7_xDgCLcBGAs/s0/rendered_images66.png "rendered_images66.png")
 
-![enter image description here](https://lh3.googleusercontent.com/-3L23b7HZ3T4/Wl2Ogwv6fdI/AAAAAAAABbk/i59xbz_FG5Mg33fplbiwU4OMAXVkIE3xQCLcBGAs/s0/rendered_images48.png "rendered_images48.png")
-
 500,000 photon with 5 traces alpha = 0.6 radius =0.375
 
-
+![enter image description here](https://lh3.googleusercontent.com/-HZcqn8xxKMc/Wl6gKncs1bI/AAAAAAAABdg/T69kGtPWYWUPBJcJJtIf2XsTUfqzpKQ6wCLcBGAs/s0/rendered_images67.png "rendered_images67.png")
 
 2,000,000 photons with 10 traces alpha = 0.6 radius = 0.8
 (rendering time 8.2 h)
@@ -170,7 +168,14 @@ Because of wrong judging method after every trace of photon shooting, there is a
 
 #### 3. Weight Direct Lighting and Indirect Lighting 
 
+It is possible to try balance indirect lighting and direct lighting, however, it does not guarantee that the result will be correct.
 
+50,000 Photons with 2 traces alpha = 0.6 radius = 0.375
+
+![enter image description here](https://lh3.googleusercontent.com/-X9Th4ZEXF5A/Wl6mgEwpjVI/AAAAAAAABd0/F4Uwz-dfRkoeY7kFnaBku91_gKjPwib_QCLcBGAs/s0/rendered_images68.png "rendered_images68.png")
+
+It is apparent that the scene is very dark because indirect lighting is not enough for lighting the scene correctly. Therefore, weighting direct lighting and indirect lighting might not be a solution.
 
 ### **Credit To:** 
 Basecode: University of Pennsylvania, CIS561 2017 Spring 
+Physically Based Rendering Third Edition
