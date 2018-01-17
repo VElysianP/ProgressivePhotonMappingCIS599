@@ -108,11 +108,17 @@ Still very sparse with bugs?????? Why?
 
 50,000 Photons with 2 traces alpha = 0.6 radius = 0.375
 
-![enter image description here](https://lh3.googleusercontent.com/-dWV9UqjkKYs/Wl4cRNr9NtI/AAAAAAAABcU/tnddmRXbSTY56XJqQaH295eJrbXpo4sdwCLcBGAs/s0/rendered_images50.png "rendered_images50.png")
+![enter image description here](https://lh3.googleusercontent.com/-GT3Fu-548B0/Wl5w-ftzrRI/AAAAAAAABc4/oa_37hTwjlkrgC-xD6ob64LNrLYWjTniwCLcBGAs/s0/rendered_images65.png "rendered_images65.png")
 
-100,000 Photons with 5 traces alpha = 0.6 radius = 0.6
+100,000 Photons with 5 traces alpha = 0.6 radius = 0.375
+
+![enter image description here](https://lh3.googleusercontent.com/-ObwlKmLlGus/Wl56tiuogMI/AAAAAAAABdM/Ef7xL6JUOHQyOws3r1oRQZwuFz0Y7_xDgCLcBGAs/s0/rendered_images66.png "rendered_images66.png")
 
 ![enter image description here](https://lh3.googleusercontent.com/-3L23b7HZ3T4/Wl2Ogwv6fdI/AAAAAAAABbk/i59xbz_FG5Mg33fplbiwU4OMAXVkIE3xQCLcBGAs/s0/rendered_images48.png "rendered_images48.png")
+
+500,000 photon with 5 traces alpha = 0.6 radius =0.375
+
+
 
 2,000,000 photons with 10 traces alpha = 0.6 radius = 0.8
 (rendering time 8.2 h)
@@ -161,6 +167,10 @@ Have to figure out this problem.
 #### 2. Light Searching Method in Final Photon Gathering 
 
 Because of wrong judging method after every trace of photon shooting, there is a dark stripe on the ceiling. The problem is fixed in the latest version. 
+
+#### 3. Weight Direct Lighting and Indirect Lighting 
+
+
 
 ### **Credit To:** 
 Basecode: University of Pennsylvania, CIS561 2017 Spring 
