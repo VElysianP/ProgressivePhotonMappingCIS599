@@ -118,10 +118,9 @@ Still very sparse with bugs?????? Why?
 
 ![enter image description here](https://lh3.googleusercontent.com/-HZcqn8xxKMc/Wl6gKncs1bI/AAAAAAAABdg/T69kGtPWYWUPBJcJJtIf2XsTUfqzpKQ6wCLcBGAs/s0/rendered_images67.png "rendered_images67.png")
 
-2,000,000 photons with 10 traces alpha = 0.6 radius = 0.8
-(rendering time 8.2 h)
-
-![enter image description here](https://lh3.googleusercontent.com/-SB7J-edyG00/Wl4YRR7hWfI/AAAAAAAABcE/nC9KMiVVjd4Avw5qJJO1MD6dsUUv8yyGgCLcBGAs/s0/rendered_images49.png "rendered_images49.png")
+2,000,000 photons with 10 traces alpha = 0.6 radius = 0.375
+(rendering time 10.2 h)
+![enter image description here](https://lh3.googleusercontent.com/-Y6KxNsYPylY/Wl-c1ExsjYI/AAAAAAAABeY/DjwatVVNXYYC1Z_puafB-d1Mkf3n8UgKgCLcBGAs/s0/rendered_images69.png "rendered_images69.png")
 
 #### Revised Rendered Images of Glass Ball
 
