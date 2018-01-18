@@ -124,9 +124,13 @@ Still very sparse with bugs?????? Why?
 
 #### Revised Rendered Images of Glass Ball
 
+100,000 photons with 2 traces alpha = 0.6 radius = 0.375
+
+![enter image description here](https://lh3.googleusercontent.com/-3zldtb4hpVM/Wl_kfYyWmlI/AAAAAAAABe0/OxJnJlgh0ZQa-VezXiZzwHuBc1HtKXFNwCLcBGAs/s0/rendered_images70.png "rendered_images70.png")
+
 500,000 photons with 5 traces alpha = 0.6 radius = 0.375
 
-
+![enter image description here](https://lh3.googleusercontent.com/-LEnjc0Zxt4k/Wl_kTCZPrMI/AAAAAAAABes/2gK-snDtDssuFczel4BufSUGQMCSxtaNQCLcBGAs/s0/rendered_images71.png "rendered_images71.png")
 
 ### **Future Improvement**
 
