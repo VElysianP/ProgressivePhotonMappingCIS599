@@ -132,6 +132,10 @@ Still very sparse with bugs?????? Why?
 
 ![enter image description here](https://lh3.googleusercontent.com/-LEnjc0Zxt4k/Wl_kTCZPrMI/AAAAAAAABes/2gK-snDtDssuFczel4BufSUGQMCSxtaNQCLcBGAs/s0/rendered_images71.png "rendered_images71.png")
 
+2,000,000 photons with 10 traces alpha = 0.6 radius = 0.375
+
+![enter image description here](https://lh3.googleusercontent.com/-kcW0F-_L3Xk/WmC8O2R8J3I/AAAAAAAABfg/9MoeovYUbmcPLPC88LK0E6YG5AN_NUGDACLcBGAs/s0/rendered_images72.png "rendered_images72.png")
+
 ### **Future Improvement**
 
 #### 1. Butter HitPoint Sorting Method
