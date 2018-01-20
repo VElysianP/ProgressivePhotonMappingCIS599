@@ -23,32 +23,10 @@ void Integrator::Render()
     std::vector<Point2i> tilePixels = bounds.GetPoints();
 
     //***************************specially used in progressive photon mapping*************
-    int indexCount = 0;
     for(Point2i pix :tilePixels)
     {
         Ray ray = camera->Raycast(pix);
-//        if((pix.x == 193)&&(pix.y ==12))
-//        {
-//            Point2f temppix = pix;
-//        }
-        //Ray ray = realCamera->Raycast(pix,sampler);
         ProgressiveRayTracing(ray, *scene, pix, sampler,recursionLimit, progHitPoint);
-        //rootProg = rootProg->InsertProgressiveKdTree(rootProg,progHitPoint[indexCount],indexCount);
-        Color3f totalColor = Color3f(0.0f);
-        std::vector<Point2f> pixelSamples = sampler->GenerateStratifiedSamples();
-        for(Point2f sample : pixelSamples)
-        {
-            Color3f currentColor;
-            DirectLightingTraceForProPhotonMapping(*scene,sampler,progHitPoint[indexCount],currentColor);
-            totalColor += currentColor;
-        }
-        totalColor = Color3f(totalColor.x / pixelSamples.size(), totalColor.y / pixelSamples.size(),
-                             totalColor.z / pixelSamples.size());
-        if(progHitPoint[indexCount].isec.ProduceBSDF())
-        {
-            progHitPoint[indexCount].color *= totalColor;
-        }
-        indexCount++;
     }
     //**************************************end of progressive photon mapping *******************
 
@@ -127,23 +105,12 @@ void Integrator::Render()
 
         for(int index = 0;index <tilePixels.size();index++)
         {
-            //int pixelIndex = px.x + camera->height * px.y;
-            //PixelHitPoint tempHit;
-//            if((progHitPoint[index].pixel.x == 193)&&(progHitPoint[index].pixel.y ==12))
-//            {
-//               tempHit = progHitPoint[index];
-//            }
             Color3f pixelColor = progHitPoint[index].color + progHitPoint[index].indirectColor;
             Point2i pixelNum = progHitPoint[index].pixel;
-//            if((progHitPoint[index].pixel.x == 193)&&(progHitPoint[index].pixel.y == 13))
-//            {
-//                PixelHitPoint tempHit = progHitPoint[index];
-//                getchar();
-//            }
+
             film->SetPixelColor(pixelNum, glm::clamp(pixelColor, 0.f, 1.f));
         }
     }
-    //rootProg->TreeDeleteProg(rootProg);
     //*************************************End of Progressive Photon Mapping***********************************
 }
 
@@ -278,73 +245,6 @@ void Integrator::cachePhotonColor(const Ray &r, const Scene &scene, int depth, c
 
 }
 
-//for progressive photon mapping only
-//this function works as a trace of direct lighting integrator
-void Integrator::DirectLightingTraceForProPhotonMapping(const Scene& scene, std::shared_ptr<Sampler> sampler, PixelHitPoint& hitPoint, Color3f& totalColor)
-{
-//    if((hitPoint.pixel.x == 185)&&(hitPoint.pixel.y == 14))
-//    {
-//        Point2i tempPix = hitPoint.pixel;
-//    }
-    //if the hitpoint hits nothing
-    //also do nothing
-    if(hitPoint.position == Point3f((float)-INFINITY))
-    {
-        return;
-    }
-    //if the hitpoint we are processing hits the light source
-    //do nothing to this hitpoint
-    else if(!hitPoint.isec.ProduceBSDF())
-    {
-        return;
-    }
-    //process all the other situations
-    else
-    {
-        Vector3f woW = -hitPoint.ray.direction;
-        Vector3f wiW;
-        Color3f leColor = hitPoint.isec.Le(woW);
-        float currentPdf;
-        float materialPdf;
-        BxDFType typebxdf;
-        int lightNum = std::floor(sampler->Get1D()*scene.lights.size());
-        Color3f liColor = scene.lights[lightNum]->Sample_Li(hitPoint.isec,sampler->Get2D(),&wiW, &currentPdf);
-
-        Color3f fColor = hitPoint.isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&materialPdf,BSDF_ALL,&typebxdf);
-
-        if(materialPdf == 0.f)
-        {
-            totalColor = Color3f(1.0f);
-            return;
-        }
-        Ray shadowTestRay = hitPoint.isec.SpawnRay(wiW);
-        Intersection shadowIntersection = Intersection();
-
-        if(scene.Intersect(shadowTestRay,&shadowIntersection))
-        {
-            //***********************************light and arealight
-            if((shadowIntersection.objectHit->GetLight()==nullptr)||(shadowIntersection.objectHit->GetLight()->name!=scene.lights[lightNum]->name))
-            {
-                totalColor = leColor;
-                return;
-            }
-        }
-
-        if(currentPdf == 0)
-        {
-            totalColor = Color3f(1.0f);
-        }
-        else
-        {
-            currentPdf = currentPdf /scene.lights.size();
-            totalColor = leColor + fColor * liColor * AbsDot(wiW,hitPoint.isec.normalGeometric) / currentPdf;
-        }
-        return;
-    }
-}
-
-
-
 //for progressive photon mapping
 //it also works as the first trace of direct lighting
 //write the color of direct lighting into the hitPoint
@@ -356,10 +256,6 @@ void Integrator::ProgressiveRayTracing(Ray cameraRay, const Scene& scene, const 
     int dep = 0;
     Color3f finalColor = Color3f(1.0f);
 
-//    if((pixel.x ==193)&&(pixel.y == 12))
-//    {
-//        getchar();
-//    }
     //shoot ray into the scene
     while(dep < depth)
     {
@@ -383,23 +279,26 @@ void Integrator::ProgressiveRayTracing(Ray cameraRay, const Scene& scene, const 
             {
                 Vector3f woW = -currentRay.direction;
                 Vector3f wiW;
+                Color3f leColor = isec.Le(woW);
                 BxDFType typeBxdf;
-                float currentPdf;
-                Color3f fColor = isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&currentPdf,BSDF_ALL,&typeBxdf);
+                float specularPdf;
+                Color3f fColor = isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&specularPdf,BSDF_ALL,&typeBxdf);
 
                 //specular bounce
-                if(currentPdf == 0.f)
+                if(specularPdf == 0.f)
                 {
                     dep++;
                     finalColor = finalColor * fColor;
                     currentRay = Ray(isec.point,wiW);
 
+                    //if the ray cannot go out of the specular object during the traces
+                    //just give the color its own Le color
                     if(dep == depth)
                     {
                         PixelHitPoint tempHitPoint;
                         tempHitPoint.pixel = pixel;
                         tempHitPoint.ray = currentRay;
-                        tempHitPoint.color = isec.Le(woW) + finalColor;
+                        tempHitPoint.color = isec.Le(woW);
                         tempHitPoint.isec = isec;
                         tempHitPoint.position = isec.point;
                         progHitPoint.push_back(tempHitPoint);
@@ -411,10 +310,51 @@ void Integrator::ProgressiveRayTracing(Ray cameraRay, const Scene& scene, const 
                 //nonspecular bounce
                 else
                 {
+                    Color3f sumColor = Color3f(0.f);
+                    std::vector<Point2f> pixelSamples = sampler->GenerateStratifiedSamples();
+                    for(Point2f pixSam : pixelSamples)
+                    {
+                        int  lightNum = std::floor(sampler->Get1D() * scene.lights.size());
+                        float lightPdf;
+                        Color3f chosenLightLiColor = scene.lights[lightNum]->Sample_Li(isec,sampler->Get2D(),&wiW,&lightPdf);
+                        Color3f directFColor = isec.bsdf->f(woW,wiW);
+
+                        Ray lightShadowRay = isec.SpawnRay(wiW);
+                        Intersection shadowIsec = Intersection();
+
+                        if(scene.Intersect(lightShadowRay,&shadowIsec))
+                        {
+                            //which means that the shadow ray cannot hit a light source
+                            //or the specific light source we want
+                            //if should be inside the shadow
+                            if((shadowIsec.objectHit->GetLight()==nullptr)||(shadowIsec.objectHit->GetLight()->name != scene.lights[lightNum]->name))
+                            {
+                                sumColor += leColor;
+                            }
+                            else
+                            {
+                                if(lightPdf == 0)
+                                {
+                                    sumColor += leColor;
+                                }
+                                else
+                                {
+                                    lightPdf = lightPdf / scene.lights.size();
+                                    sumColor += (leColor + directFColor * chosenLightLiColor * AbsDot(wiW,isec.normalGeometric)/lightPdf);
+                                }
+                            }
+
+                        }
+                        else
+                        {
+                            sumColor += leColor;
+                        }
+                    }
+                    sumColor = sumColor / Color3f((float)pixelSamples.size());
                     PixelHitPoint tempHitPoint;
                     tempHitPoint.pixel = pixel;
                     tempHitPoint.ray = currentRay;
-                    tempHitPoint.color = isec.Le(woW) + finalColor;
+                    tempHitPoint.color = finalColor * sumColor;
                     tempHitPoint.isec = isec;
                     tempHitPoint.position = isec.point;
                     progHitPoint.push_back(tempHitPoint);

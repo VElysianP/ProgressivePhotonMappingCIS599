@@ -12,21 +12,17 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
 {
     //this value functions as shrinking the radius
     //somehow needs to change based on our need
-    float alpha = 0.6;
-//    for(int i = 0; i< hitPoints.size();i++)
-//    {
-//        if((hitPoints[i].pixel.x == 193)&&(hitPoints[i].pixel.y == 12))
-//        {
-//            int h = 0;
-//        }
-//    }
+    float alpha = 0.8;
+
     for(int count = 0;count<numPhotons;count++)
     {
         int chosenLightNum = std::floor(sampler->Get1D()*scene.lights.size());
         Ray tempRay = scene.lights[chosenLightNum]->EmitSampleLight(sampler);
+        //spawn the ray that goes out from the light source
         tempRay.origin = tempRay.origin + RayEpsilon * tempRay.direction;
         Intersection isec = Intersection();
         BxDFType typeBxdf;
+        //all indirect lighting color starts from the light source
         Color3f currentColor = scene.lights[chosenLightNum]->emittedLight;
         int traceNum = 0;
 
@@ -53,52 +49,24 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
                 {
                     break;
                 }
-
-                Color3f fColor = isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&currentPdf,BSDF_ALL,&typeBxdf);
-                //the photon meets specular bounce
-                //if((typeBxdf&BSDF_SPECULAR)!=0)
-                //{
-                   // currentColor = currentColor * fColor * AbsDot(wiW,isec.bsdf->normal);
-                    //tempRay = isec.SpawnRay(wiW);
-                //}
-                //the photon meet non-specular bounce
-                //else
-                //{
+                //not the light source
+                else
+                {
+                    Color3f fColor = isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&currentPdf,BSDF_ALL,&typeBxdf);
+                    currentColor = currentColor * fColor /* AbsDot(wiW,isec.bsdf->normal)*/;
                     tempRay = isec.SpawnRay(wiW);
-                    //if(currentPdf != 0.f)
-                    //{
-                        currentColor = currentColor * fColor * AbsDot(wiW,isec.bsdf->normal);
-                    //}
 
+                    //the first trace of progressive photon mapping is replaced by
+                    //direct lighting integrator
                     if(traceNum == 1)
                     {
-                        continue;
+                       continue;
                     }
-
-                    UpdateHitPoints(hitPoints,isec.point,currentColor);
-                    //break;
-                    //********************************** the kdtree method****************************
-                    //find the nearest hitpoint
-                    //rewrite the newColor of hitpoint
-                    //add up the numNewPhotons amount
-                    //
-                    //int nearHitPointIndex = root->NearHitPointProg(isec.point,root);
-
-                    //which means that there exists photon that has proper distance to a hitpoint
-                    //and this is the index of the proper hitpoint
-                    //add up the color of the hitpoint and then update the datas of this hitpoint
-                    //int foundPhotons = 0;
-                    //if(nearHitPointIndex != -1)
-                    //{
-                        //hitPoints[nearHitPointIndex].newColor += currentColor;
-                        //hitPoints[nearHitPointIndex].numNewPhotons += 1;
-                        //foundPhotons++;
-
-                    //}
-                    //if there is not proper hitpoint near the photon
-                    //just throw away this photon
-                    //******************************************end of kdtree******************************
-                //}
+                    else
+                    {
+                        UpdateHitPoints(hitPoints,isec.point,currentColor);
+                    }
+                }
 
                 //Russian Roulette
                 float uniformRandom = sampler->Get1D();
@@ -112,6 +80,7 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
                 }
             }
             //if the photon does not hit anything just step out the loop
+            //throw away the photon
             else
             {
                 break;
@@ -151,13 +120,7 @@ void ProgressivePhotonMapping::PhotonFinalGathering(QList<PixelHitPoint>& hitPoi
     //recalculate the hitpoint parameters
     //correct the color for this hit point
     for(int hitCount = 0;hitCount < hitPoints.size();hitCount++)
-    {
-//        PixelHitPoint tempHit;
-//        if((hitPoints[hitCount].pixel.x == 193)&&(hitPoints[hitCount].pixel.y == 12))
-//        {
-//            //break;
-//             tempHit = hitPoints[hitCount];
-//        }
+    {      
         //which means this hitPoint hits the light source
         //go to the next hitpoint
         if(hitPoints[hitCount].isec.ProduceBSDF())
