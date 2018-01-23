@@ -78,18 +78,18 @@ void Integrator::Render()
 //        }
 //         //Average all samples' energies
 //        pixelColor /= pixelSamples.size();
-//        int pixelIndex = pixel.x + pixel.y * camera->height;
-//        pixelColor = progHitPoint[pixelIndex].color;
+//        //int pixelIndex = pixel.x + pixel.y * camera->height;
+//        //pixelColor = progHitPoint[pixelIndex].color;
 //        film->SetPixelColor(pixel, glm::clamp(pixelColor, 0.f, 1.f));
 //    }
 
     //We're done here! All pixels have been given an averaged color.
     //do deletion
-//    for(auto mapPhs : photonMap){
-//        free(mapPhs);
-//    }
-//    photonMap.clear();
-//    tree.TreeDelete(tree.root);
+    //for(auto mapPhs : photonMap){
+    //    free(mapPhs);
+    //}
+    //photonMap.clear();
+    //tree.TreeDelete(tree.root);
     //************************************************End of Path tracing and Photon Mapping********************************
 
 
@@ -250,6 +250,10 @@ void Integrator::cachePhotonColor(const Ray &r, const Scene &scene, int depth, c
 //write the color of direct lighting into the hitPoint
 void Integrator::ProgressiveRayTracing(Ray cameraRay, const Scene& scene, const Point2i pixel, std::shared_ptr<Sampler> sampler, const int depth, QList<PixelHitPoint> &progHitPoint)
 {
+    if((pixel.x==262)&&(pixel.y==121))
+    {
+        Point3f tempPoint;
+    }
     Intersection isec = Intersection();
     //cameraRay = scene.camera.Raycast((float)pixel.x,(float)pixel.y);
     Ray currentRay = cameraRay;
@@ -285,7 +289,7 @@ void Integrator::ProgressiveRayTracing(Ray cameraRay, const Scene& scene, const 
                 Color3f fColor = isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&specularPdf,BSDF_ALL,&typeBxdf);
 
                 //specular bounce
-                if(specularPdf == 0.f)
+                if(specularPdf == 0.0f)
                 {
                     dep++;
                     finalColor = finalColor * fColor;
@@ -297,9 +301,9 @@ void Integrator::ProgressiveRayTracing(Ray cameraRay, const Scene& scene, const 
                     {
                         PixelHitPoint tempHitPoint;
                         tempHitPoint.pixel = pixel;
-                        tempHitPoint.ray = currentRay;
+                        //tempHitPoint.ray = currentRay;
                         tempHitPoint.color = isec.Le(woW);
-                        tempHitPoint.isec = isec;
+                        //tempHitPoint.isec = isec;
                         tempHitPoint.position = isec.point;
                         progHitPoint.push_back(tempHitPoint);
                         return;

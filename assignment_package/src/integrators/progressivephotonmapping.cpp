@@ -53,12 +53,12 @@ void ProgressivePhotonMapping::TraceProgressivePhotons(const Scene& scene, Progr
                 else
                 {
                     Color3f fColor = isec.bsdf->Sample_f(woW,&wiW,sampler->Get2D(),&currentPdf,BSDF_ALL,&typeBxdf);
-                    currentColor = currentColor * fColor /* AbsDot(wiW,isec.bsdf->normal)*/;
+                    currentColor = currentColor * fColor * AbsDot(wiW,isec.bsdf->normal);
                     tempRay = isec.SpawnRay(wiW);
 
                     //the first trace of progressive photon mapping is replaced by
                     //direct lighting integrator
-                    if(traceNum == 1)
+                    if((traceNum == 1)||(currentPdf == 0.f))
                     {
                        continue;
                     }

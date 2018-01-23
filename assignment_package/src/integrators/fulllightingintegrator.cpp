@@ -273,4 +273,3 @@ float PowerHeuristic(int nf, Float fPdf, int ng, Float gPdf)
          return (f * f)/(f * f + g * g);
     }
 }
-
