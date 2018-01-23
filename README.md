@@ -136,6 +136,16 @@ Still very sparse with bugs?????? Why?
 
 ![enter image description here](https://lh3.googleusercontent.com/-kcW0F-_L3Xk/WmC8O2R8J3I/AAAAAAAABfg/9MoeovYUbmcPLPC88LK0E6YG5AN_NUGDACLcBGAs/s0/rendered_images72.png "rendered_images72.png")
 
+#### Final Revision 
+
+Cornell Box 500,000 photons with 2 traces, radius = 0.375, alpha = 0.8
+
+![enter image description here](https://lh3.googleusercontent.com/-C_h6AYOk_wc/WmYK50BfbXI/AAAAAAAABgg/MCYBvUS8JDkWzPEFIoljVuDP770P7YJEwCLcBGAs/s0/rendered_images84.png "rendered_images84.png")
+
+Glass Ball 
+
+
+Mirror Cornell Box 
 ### **Future Improvement**
 
 #### 1. Butter HitPoint Sorting Method
@@ -182,6 +192,10 @@ It is possible to try balance indirect lighting and direct lighting, however, it
 ![enter image description here](https://lh3.googleusercontent.com/-X9Th4ZEXF5A/Wl6mgEwpjVI/AAAAAAAABd0/F4Uwz-dfRkoeY7kFnaBku91_gKjPwib_QCLcBGAs/s0/rendered_images68.png "rendered_images68.png")
 
 It is apparent that the scene is very dark because indirect lighting is not enough for lighting the scene correctly. Therefore, weighting direct lighting and indirect lighting might not be a solution.
+
+#### 4. Indirect Lighting Revision 
+
+
 
 ### **Credit To:** 
 Basecode: University of Pennsylvania, CIS561 2017 Spring 
